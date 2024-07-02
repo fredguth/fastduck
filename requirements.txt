@@ -1,2 +1,7 @@
 fastcore>=1.5.41
-sqlite-utils
+duckdb
+graphviz
+numpy
+pandas
+ipykernel
+pyarrow

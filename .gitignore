@@ -16,7 +16,8 @@ conda/
 _tmp*
 tmp*
 tags
-
+*.deb
+*.pkg
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

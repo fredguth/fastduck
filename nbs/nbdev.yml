@@ -2,8 +2,8 @@ project:
   output-dir: _docs
 
 website:
-  title: "fastlite"
-  site-url: "https://AnswerDotAI.github.io/fastlite"
-  description: "A bit of extra usability for sqlite"
+  title: "fastduck"
+  site-url: "https://fredguth.github.io/fastduck"
+  description: "A bit of extra usability for duckdb... inspired by fastlite and sqlite_utils"
   repo-branch: main
-  repo-url: "https://github.com/AnswerDotAI/fastlite"
+  repo-url: "https://github.com/fredguth/fastduck"
