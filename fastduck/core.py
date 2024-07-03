@@ -3,46 +3,51 @@
 # %% auto 0
 __all__ = ['convertTypes', 'noop', 'identity', 'custom_dir', 'Database', 'Table', 'View']
 
-# %% ../nbs/00_core.ipynb 3
+# %% ../nbs/00_core.ipynb 9
 @patch(as_prop=True)
 def table_names(self: DuckDBPyConnection): 
-    return [r[0] for r in db.sql(f"SELECT table_name FROM duckdb_tables() WHERE schema_name = current_schema()").fetchall()]
+    ''' Tables in the current schema ''' 
+    return [r[0] for r in self.sql(f"SELECT table_name FROM duckdb_tables() WHERE schema_name = current_schema()").fetchall()]
 @patch(as_prop=True)
 def view_names(self: DuckDBPyConnection): 
-    return [r[0] for r in db.sql(f"SELECT view_name FROM duckdb_views() WHERE schema_name = current_schema() and internal = False").fetchall()]
+    ''' Views in the current schema ''' 
+    return [r[0] for r in self.sql(f"SELECT view_name FROM duckdb_views() WHERE schema_name = current_schema() and internal = False").fetchall()]
 @patch(as_prop=True)
 def function_names(self: DuckDBPyConnection): 
-    return [r[0] for r in db.sql(f"SELECT function_name FROM duckdb_functions() WHERE schema_name = current_schema() and internal=False").fetchall()]
+    ''' Functions in the current schema ''' 
+    return [r[0] for r in self.sql(f"SELECT function_name FROM duckdb_functions() WHERE schema_name = current_schema() and internal=False").fetchall()]
 
-# %% ../nbs/00_core.ipynb 6
+# %% ../nbs/00_core.ipynb 11
 @patch(as_prop=True) # alias for alias
 def name(self:DuckDBPyRelation): return self.alias
 
-@patch # use __getitem__ as select
+@patch
 def __getitem__(self:DuckDBPyRelation, idxs) -> DuckDBPyRelation:
     return self.select(*idxs) if isinstance(idxs, Union[List, Set, Tuple]) else self.select(idxs)
 @patch 
 def to_recs(self:DuckDBPyRelation) -> List[Dict[str, Any]]:
+    '''The relation as a list of records'''
     return self.df().to_dict(orient='records')
 
 @patch 
 def q(self:DuckDBPyConnection, *args, **kwargs) -> List[Dict[str, Any]]:
+    '''Run a query and return the result as a list of records'''
     return self.sql(*args, **kwargs).to_recs()
-
-# %% ../nbs/00_core.ipynb 9
-@patch # use __getitem__ as select
-def __getitem__(self:DuckDBPyRelation, idxs):
-    return self.select(*idxs) if isinstance(idxs, Union[List, Set, Tuple]) else self.select(idxs)
 
 # %% ../nbs/00_core.ipynb 13
 @patch
 def datamodel(self: DuckDBPyConnection, table_name:str) ->List[Dict]:
-    info =  self.sql(f"PRAGMA table_info='{table_name}'").fetchall()
-    return [{'name': r[1], 'type': r[2], 'nullable': not r[3], 'default': r[4], 'pk': r[5]} for r in info]
+    ''' Returns the data model of a table or view. 
+    The datamodel contains the names, types, nullable status, default value and
+    primary key status of the relation columns.'''
+    
+    return [{'name': r[1], 'type': r[2], 'nullable': not r[3], 'default': r[4], 'pk': r[5]} 
+            for r in self.sql(f"PRAGMA table_info='{table_name}'").fetchall()]
 
-# %% ../nbs/00_core.ipynb 14
+# %% ../nbs/00_core.ipynb 15
 from dataclasses import field, make_dataclass
 def convertTypes(s:str)->type:
+    ''' Convert DuckDB types to Python and Numpy types'''
     d = {
         # Built-in types
         'BOOLEAN': bool,
@@ -52,11 +57,10 @@ def convertTypes(s:str)->type:
         'VARCHAR': str,
     
         # NumPy DTypes
-        'FLOAT': np.float32,
-        'DOUBLE': np.float64,
+        'FLOAT': float,
+        'DOUBLE': float,
         'SMALLINT': np.int16,
         'INTEGER': np.int32,
-        'BIGINT': np.int64,
         'TINYINT': np.int8,
         'USMALLINT': np.uint16,
         'UINTEGER': np.uint32,
@@ -67,8 +71,18 @@ def convertTypes(s:str)->type:
     if s[:7]=='DECIMAL': return float
     return None
 
+@patch
+def dataclass(self: DuckDBPyConnection, 
+              table_name:str, # table or view name
+              pref='', # prefix to add to the field names
+              suf='' # suffix to add to the field names
+              ) -> type:
+   '''Creates a `dataclass` type from a table or view in the database.'''
+   fields = self.datamodel(table_name)
+   fields = [(pref+f['name']+suf, convertTypes(f['type']) if not f['nullable'] else convertTypes(f['type'])|None , field(default=f['default'])) for f in fields]
+   return make_dataclass(table_name, fields)
 
-# %% ../nbs/00_core.ipynb 15
+# %% ../nbs/00_core.ipynb 19
 @patch
 def _metadata(self: DuckDBPyConnection,name:str, type:str='table') -> Dict:
     table = (self.table(name) if type == 'table' else self.view(name))
@@ -81,37 +95,32 @@ def _metadata(self: DuckDBPyConnection,name:str, type:str='table') -> Dict:
     return meta
 @patch
 def metadata(self: DuckDBPyConnection, name:str) -> Dict:
+    '''Metadata of a table or view'''
     if name in self.table_names: return self._metadata(name, 'table')
     else: return self._metadata(name, 'view')
 
-# %% ../nbs/00_core.ipynb 18
-@patch
-def dataclass(self: DuckDBPyConnection, table_name:str, pref='', suf='') -> type:
-   fields = self.datamodel(table_name)
-   fields = [(pref+f['name']+suf, convertTypes(f['type']) if not f['nullable'] else convertTypes(f['type'])|None , field(default=f['default'])) for f in fields]
-   return make_dataclass(table_name, fields)
-
-# %% ../nbs/00_core.ipynb 26
+# %% ../nbs/00_core.ipynb 29
 def noop(*args, **kwargs): return None
 def identity(x): return x
 
-# %% ../nbs/00_core.ipynb 27
+# %% ../nbs/00_core.ipynb 30
 class _Getter: 
     """ A Getter utility check https://github.com/AnswerDotAI/fastlite """
     def __init__(self, name:str='', type:str='', dir:List=[], get=noop): store_attr()    
     def __dir__(self): return self.dir
     def __str__(self): return ", ".join(dir(self))
-    def __repr__(self): return f"{self.type}::{self.name}: {str(self)}"
+    def __repr__(self): return f"{self.type}s: {str(self)}"
     def __contains__(self, s:str): return s in dir(self)
     def __getitem__(self, k): return self.get(k)
     def __getattr__(self, k):
         if k[0]!='_': return self.get(k)
         else: raise AttributeError 
 
-# %% ../nbs/00_core.ipynb 28
+# %% ../nbs/00_core.ipynb 31
 def custom_dir(c, add): return dir(type(c)) + list(c.__dict__.keys()) + add
 
 class Database:
+    ''' A Database object that wraps a DuckDB connection and provides access to tables, views, functions and secrets.'''
     def _current(self: DuckDBPyConnection): return self.sql('select current_catalog, current_schema').fetchone()
 
     def __init__(self, *args, **kwargs):
@@ -163,8 +172,9 @@ class Database:
     def q(self:Database, query:str): return self.conn.sql(query).to_recs()
     
 
-# %% ../nbs/00_core.ipynb 29
+# %% ../nbs/00_core.ipynb 32
 class Table:
+    ''' A Table object that wraps a DuckDBPyRelation and provides access to columns, metadata and dataclass.'''
     def __init__(self, rel:duckdb.DuckDBPyRelation, db:Database, name:str):
         store_attr()
         self.type='Table'
