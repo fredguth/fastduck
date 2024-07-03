@@ -26,10 +26,6 @@ def to_recs(self:DuckDBPyRelation) -> List[Dict[str, Any]]:
     return self.df().to_dict(orient='records')
 
 @patch 
-def to_json(self:DuckDBPyRelation) -> JSON:
-    return self.df().to_json()
-
-@patch 
 def q(self:DuckDBPyConnection, *args, **kwargs) -> List[Dict[str, Any]]:
     return self.sql(*args, **kwargs).to_recs()
 
