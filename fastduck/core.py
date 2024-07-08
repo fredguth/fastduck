@@ -189,7 +189,17 @@ def table(self:DuckDBPyConnection, name:str, schema:str= None, catalog:str=None)
 
 
 
-# %% ../nbs/00_core.ipynb 34
+# %% ../nbs/00_core.ipynb 33
+@patch
+def _select(self:DuckDBPyRelation, k) -> DuckDBPyRelation:
+    return self.select(k) if isinstance(k, str) else self.select(*k)
+
+@patch(as_prop=True)
+def c(self:DuckDBPyRelation): 
+    '''Column autocomplete'''
+    return _Getter(self, 'column', self.columns, self._select)
+
+# %% ../nbs/00_core.ipynb 35
 def noop(*args, **kwargs): return None
 def identity(x): return x
 
@@ -238,12 +248,24 @@ def shh(self:DuckDBPyConnection): raise NotImplementedError
 def __repr__(self:DuckDBPyConnection): return f'{self.__class__.__name__} ({self.catalog}_{self.schema})'
 
 
-# %% ../nbs/00_core.ipynb 35
+# %% ../nbs/00_core.ipynb 39
 @patch
-def _select(self:DuckDBPyRelation, k) -> DuckDBPyRelation:
-    return self.select(k) if isinstance(k, str) else self.select(*k)
+def __str__(self:DuckDBPyRelation): return f'{self.alias}'
 
-@patch(as_prop=True)
-def c(self:DuckDBPyRelation): 
-    '''Column autocomplete'''
-    return _Getter(self, 'column', self.columns, self._select)
+@patch
+def __repr__(self:DuckDBPyRelation): 
+    return f"<{self.__class__.__name__} {self.meta['type'] if self.meta else ''} **{self.alias}** ({self.shape[0]} rows, {self.shape[1]} cols)>\n\n"
+@patch
+def _repr_markdown_(self: DuckDBPyRelation): 
+    markdown =  f"{self.__repr__()}\n\n"
+    if self.meta and self.meta['comment']: markdown += f"> {self.meta['comment']}\n\n"
+    df = self.df()
+    if self.shape[0] > 5: 
+        head = df.head(3)
+        tail = df.tail(2)
+        ellipsis = pd.DataFrame([["..."] * df.shape[1]], columns=df.columns)
+        df = pd.concat([head, ellipsis, tail])
+    markdown += df.to_markdown(index=False)
+    return markdown
+
+
