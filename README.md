@@ -41,72 +41,34 @@ artist = dt.Artist
 artist
 ```
 
-    ┌──────────┬────────────────────────────────────────────────────────────────────────────────────┐
-    │ ArtistId │                                        Name                                        │
-    │  int32   │                                      varchar                                       │
-    ├──────────┼────────────────────────────────────────────────────────────────────────────────────┤
-    │        1 │ AC/DC                                                                              │
-    │        2 │ Accept                                                                             │
-    │        3 │ Aerosmith                                                                          │
-    │        4 │ Alanis Morissette                                                                  │
-    │        5 │ Alice In Chains                                                                    │
-    │        6 │ Antônio Carlos Jobim                                                               │
-    │        7 │ Apocalyptica                                                                       │
-    │        8 │ Audioslave                                                                         │
-    │        9 │ BackBeat                                                                           │
-    │       10 │ Billy Cobham                                                                       │
-    │        · │      ·                                                                             │
-    │        · │      ·                                                                             │
-    │        · │      ·                                                                             │
-    │      266 │ Martin Roscoe                                                                      │
-    │      267 │ Göteborgs Symfoniker & Neeme Järvi                                                 │
-    │      268 │ Itzhak Perlman                                                                     │
-    │      269 │ Michele Campanella                                                                 │
-    │      270 │ Gerald Moore                                                                       │
-    │      271 │ Mela Tenenbaum, Pro Musica Prague & Richard Kapp                                   │
-    │      272 │ Emerson String Quartet                                                             │
-    │      273 │ C. Monteverdi, Nigel Rogers - Chiaroscuro; London Baroque; London Cornett & Sackbu │
-    │      274 │ Nash Ensemble                                                                      │
-    │      275 │ Philip Glass Ensemble                                                              │
-    ├──────────┴────────────────────────────────────────────────────────────────────────────────────┤
-    │ 275 rows (20 shown)                                                                 2 columns │
-    └───────────────────────────────────────────────────────────────────────────────────────────────┘
+\<DuckDBPyRelation BASE TABLE **chinook.main.Artist** (275 rows, 2
+cols)\>
+
+| ArtistId | Name                  |
+|:---------|:----------------------|
+| 1        | AC/DC                 |
+| 2        | Accept                |
+| 3        | Aerosmith             |
+| …        | …                     |
+| 274      | Nash Ensemble         |
+| 275      | Philip Glass Ensemble |
 
 ``` python
 customer = dt['Customer']
 customer
 ```
 
-    ┌────────────┬───────────┬─────────────┬───┬────────────────────┬──────────────────────┬──────────────┐
-    │ CustomerId │ FirstName │  LastName   │ … │        Fax         │        Email         │ SupportRepId │
-    │   int32    │  varchar  │   varchar   │   │      varchar       │       varchar        │    int32     │
-    ├────────────┼───────────┼─────────────┼───┼────────────────────┼──────────────────────┼──────────────┤
-    │          1 │ Luís      │ Gonçalves   │ … │ +55 (12) 3923-5566 │ luisg@embraer.com.br │            3 │
-    │          2 │ Leonie    │ Köhler      │ … │ NULL               │ leonekohler@surfeu…  │            5 │
-    │          3 │ François  │ Tremblay    │ … │ NULL               │ ftremblay@gmail.com  │            3 │
-    │          4 │ Bjørn     │ Hansen      │ … │ NULL               │ bjorn.hansen@yahoo…  │            4 │
-    │          5 │ František │ Wichterlová │ … │ +420 2 4172 5555   │ frantisekw@jetbrai…  │            4 │
-    │          6 │ Helena    │ Holý        │ … │ NULL               │ hholy@gmail.com      │            5 │
-    │          7 │ Astrid    │ Gruber      │ … │ NULL               │ astrid.gruber@appl…  │            5 │
-    │          8 │ Daan      │ Peeters     │ … │ NULL               │ daan_peeters@apple…  │            4 │
-    │          9 │ Kara      │ Nielsen     │ … │ NULL               │ kara.nielsen@jubii…  │            4 │
-    │         10 │ Eduardo   │ Martins     │ … │ +55 (11) 3033-4564 │ eduardo@woodstock.…  │            4 │
-    │          · │    ·      │   ·         │ · │  ·                 │          ·           │            · │
-    │          · │    ·      │   ·         │ · │  ·                 │          ·           │            · │
-    │          · │    ·      │   ·         │ · │  ·                 │          ·           │            · │
-    │         50 │ Enrique   │ Muñoz       │ … │ NULL               │ enrique_munoz@yaho…  │            5 │
-    │         51 │ Joakim    │ Johansson   │ … │ NULL               │ joakim.johansson@y…  │            5 │
-    │         52 │ Emma      │ Jones       │ … │ NULL               │ emma_jones@hotmail…  │            3 │
-    │         53 │ Phil      │ Hughes      │ … │ NULL               │ phil.hughes@gmail.…  │            3 │
-    │         54 │ Steve     │ Murray      │ … │ NULL               │ steve.murray@yahoo…  │            5 │
-    │         55 │ Mark      │ Taylor      │ … │ NULL               │ mark.taylor@yahoo.au │            4 │
-    │         56 │ Diego     │ Gutiérrez   │ … │ NULL               │ diego.gutierrez@ya…  │            4 │
-    │         57 │ Luis      │ Rojas       │ … │ NULL               │ luisrojas@yahoo.cl   │            5 │
-    │         58 │ Manoj     │ Pareek      │ … │ NULL               │ manoj.pareek@redif…  │            3 │
-    │         59 │ Puja      │ Srivastava  │ … │ NULL               │ puja_srivastava@ya…  │            3 │
-    ├────────────┴───────────┴─────────────┴───┴────────────────────┴──────────────────────┴──────────────┤
-    │ 59 rows (20 shown)                                                             13 columns (6 shown) │
-    └─────────────────────────────────────────────────────────────────────────────────────────────────────┘
+\<DuckDBPyRelation BASE TABLE **chinook.main.Customer** (59 rows, 13
+cols)\>
+
+| CustomerId | FirstName | LastName   | Company                                          | Address                         | City                | State | Country | PostalCode | Phone              | Fax                | Email                    | SupportRepId |
+|:-----------|:----------|:-----------|:-------------------------------------------------|:--------------------------------|:--------------------|:------|:--------|:-----------|:-------------------|:-------------------|:-------------------------|:-------------|
+| 1          | Luís      | Gonçalves  | Embraer - Empresa Brasileira de Aeronáutica S.A. | Av. Brigadeiro Faria Lima, 2170 | São José dos Campos | SP    | Brazil  | 12227-000  | +55 (12) 3923-5555 | +55 (12) 3923-5566 | luisg@embraer.com.br     | 3            |
+| 2          | Leonie    | Köhler     |                                                  | Theodor-Heuss-Straße 34         | Stuttgart           |       | Germany | 70174      | +49 0711 2842222   |                    | leonekohler@surfeu.de    | 5            |
+| 3          | François  | Tremblay   |                                                  | 1498 rue Bélanger               | Montréal            | QC    | Canada  | H2G 1A7    | +1 (514) 721-4711  |                    | ftremblay@gmail.com      | 3            |
+| …          | …         | …          | …                                                | …                               | …                   | …     | …       | …          | …                  | …                  | …                        | …            |
+| 58         | Manoj     | Pareek     |                                                  | 12,Community Centre             | Delhi               |       | India   | 110017     | +91 0124 39883988  |                    | manoj.pareek@rediff.com  | 3            |
+| 59         | Puja      | Srivastava |                                                  | 3,Raj Bhavan Road               | Bangalore           |       | India   | 560001     | +91 080 22289999   |                    | puja_srivastava@yahoo.in | 3            |
 
 … or multiple tables at once:
 
@@ -114,101 +76,17 @@ customer
 dt['Artist', 'Album', 'Genre']
 ```
 
-    [┌──────────┬────────────────────────────────────────────────────────────────────────────────────┐
-     │ ArtistId │                                        Name                                        │
-     │  int32   │                                      varchar                                       │
-     ├──────────┼────────────────────────────────────────────────────────────────────────────────────┤
-     │        1 │ AC/DC                                                                              │
-     │        2 │ Accept                                                                             │
-     │        3 │ Aerosmith                                                                          │
-     │        4 │ Alanis Morissette                                                                  │
-     │        5 │ Alice In Chains                                                                    │
-     │        6 │ Antônio Carlos Jobim                                                               │
-     │        7 │ Apocalyptica                                                                       │
-     │        8 │ Audioslave                                                                         │
-     │        9 │ BackBeat                                                                           │
-     │       10 │ Billy Cobham                                                                       │
-     │        · │      ·                                                                             │
-     │        · │      ·                                                                             │
-     │        · │      ·                                                                             │
-     │      266 │ Martin Roscoe                                                                      │
-     │      267 │ Göteborgs Symfoniker & Neeme Järvi                                                 │
-     │      268 │ Itzhak Perlman                                                                     │
-     │      269 │ Michele Campanella                                                                 │
-     │      270 │ Gerald Moore                                                                       │
-     │      271 │ Mela Tenenbaum, Pro Musica Prague & Richard Kapp                                   │
-     │      272 │ Emerson String Quartet                                                             │
-     │      273 │ C. Monteverdi, Nigel Rogers - Chiaroscuro; London Baroque; London Cornett & Sackbu │
-     │      274 │ Nash Ensemble                                                                      │
-     │      275 │ Philip Glass Ensemble                                                              │
-     ├──────────┴────────────────────────────────────────────────────────────────────────────────────┤
-     │ 275 rows (20 shown)                                                                 2 columns │
-     └───────────────────────────────────────────────────────────────────────────────────────────────┘,
-     ┌─────────┬─────────────────────────────────────────────────────────────────────┬──────────┐
-     │ AlbumId │                                Title                                │ ArtistId │
-     │  int32  │                               varchar                               │  int32   │
-     ├─────────┼─────────────────────────────────────────────────────────────────────┼──────────┤
-     │       1 │ For Those About To Rock We Salute You                               │        1 │
-     │       2 │ Balls to the Wall                                                   │        2 │
-     │       3 │ Restless and Wild                                                   │        2 │
-     │       4 │ Let There Be Rock                                                   │        1 │
-     │       5 │ Big Ones                                                            │        3 │
-     │       6 │ Jagged Little Pill                                                  │        4 │
-     │       7 │ Facelift                                                            │        5 │
-     │       8 │ Warner 25 Anos                                                      │        6 │
-     │       9 │ Plays Metallica By Four Cellos                                      │        7 │
-     │      10 │ Audioslave                                                          │        8 │
-     │       · │     ·                                                               │        · │
-     │       · │     ·                                                               │        · │
-     │       · │     ·                                                               │        · │
-     │     338 │ Nielsen: The Six Symphonies                                         │      267 │
-     │     339 │ Great Recordings of the Century: Paganini's 24 Caprices             │      268 │
-     │     340 │ Liszt - 12 Études D'Execution Transcendante                         │      269 │
-     │     341 │ Great Recordings of the Century - Shubert: Schwanengesang, 4 Lieder │      270 │
-     │     342 │ Locatelli: Concertos for Violin, Strings and Continuo, Vol. 3       │      271 │
-     │     343 │ Respighi:Pines of Rome                                              │      226 │
-     │     344 │ Schubert: The Late String Quartets & String Quintet (3 CD's)        │      272 │
-     │     345 │ Monteverdi: L'Orfeo                                                 │      273 │
-     │     346 │ Mozart: Chamber Music                                               │      274 │
-     │     347 │ Koyaanisqatsi (Soundtrack from the Motion Picture)                  │      275 │
-     ├─────────┴─────────────────────────────────────────────────────────────────────┴──────────┤
-     │ 347 rows (20 shown)                                                            3 columns │
-     └──────────────────────────────────────────────────────────────────────────────────────────┘,
-     ┌─────────┬────────────────────┐
-     │ GenreId │        Name        │
-     │  int32  │      varchar       │
-     ├─────────┼────────────────────┤
-     │       1 │ Rock               │
-     │       2 │ Jazz               │
-     │       3 │ Metal              │
-     │       4 │ Alternative & Punk │
-     │       5 │ Rock And Roll      │
-     │       6 │ Blues              │
-     │       7 │ Latin              │
-     │       8 │ Reggae             │
-     │       9 │ Pop                │
-     │      10 │ Soundtrack         │
-     │       · │   ·                │
-     │       · │   ·                │
-     │       · │   ·                │
-     │      16 │ World              │
-     │      17 │ Hip Hop/Rap        │
-     │      18 │ Science Fiction    │
-     │      19 │ TV Shows           │
-     │      20 │ Sci Fi & Fantasy   │
-     │      21 │ Drama              │
-     │      22 │ Comedy             │
-     │      23 │ Alternative        │
-     │      24 │ Classical          │
-     │      25 │ Opera              │
-     ├─────────┴────────────────────┤
-     │      25 rows (20 shown)      │
-     └──────────────────────────────┘]
+    [<DuckDBPyRelation BASE TABLE **chinook.main.Artist** (275 rows, 2 cols)>
+     ,
+     <DuckDBPyRelation BASE TABLE **chinook.main.Album** (347 rows, 3 cols)>
+     ,
+     <DuckDBPyRelation BASE TABLE **chinook.main.Genre** (25 rows, 2 cols)>
+     ]
 
 It also provides auto-complete in Jupyter, IPython and nearly any other
 interactive Python environment:
 
-<img src="nbs/mages/autocomplete.png" width="400"
+<img src="images/autocomplete.png" width="400"
 alt="Autocomplete in Jupyter" />
 
 You can check if a table is in the database already:
@@ -226,14 +104,11 @@ ac = artist.c
 ac, artist.columns
 ```
 
-    (│
-     └───────────────────────────────────────────────────────────────────────────────────────────────┘
-      Columns: ArtistId, Name,
-     ['ArtistId', 'Name'])
+    (chinook.main.Artist Columns: ArtistId, Name, ['ArtistId', 'Name'])
 
 Auto-complete works for columns too:
 
-<img src="nbs/images/columns_complete.png" width="300"
+<img src="images/columns_complete.png" width="300"
 alt="Columns autocomplete in Jupyter" />
 
 The tables and views of a database got some interesting new attributes….
@@ -278,12 +153,12 @@ SQL statements:
 db.sql("select * from artist where artist.Name like 'AC/%'")
 ```
 
-    ┌──────────┬─────────┐
-    │ ArtistId │  Name   │
-    │  int32   │ varchar │
-    ├──────────┼─────────┤
-    │        1 │ AC/DC   │
-    └──────────┴─────────┘
+\<DuckDBPyRelation **unnamed_relation_88ad0e8a5a0890ad** (1 rows, 2
+cols)\>
+
+| ArtistId | Name  |
+|---------:|:------|
+|        1 | AC/DC |
 
 You can view the results of a query as records
 
