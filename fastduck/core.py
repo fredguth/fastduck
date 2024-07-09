@@ -273,7 +273,7 @@ def shh(self:DuckDBPyConnection): raise NotImplementedError
 def __repr__(self:DuckDBPyConnection): return f'{self.__class__.__name__} ({self.catalog}_{self.schema})'
 
 
-# %% ../nbs/00_core.ipynb 42
+# %% ../nbs/00_core.ipynb 41
 @patch
 def __str__(self:DuckDBPyRelation): return f'{self.alias}'
 
@@ -295,7 +295,7 @@ def _repr_markdown_(self: DuckDBPyRelation):
 
 
 
-# %% ../nbs/00_core.ipynb 59
+# %% ../nbs/00_core.ipynb 57
 class RemoteSqliteError(Exception): pass
 class InvalidPathError(Exception): pass
 
@@ -312,10 +312,10 @@ def attach(self: DuckDBPyConnection, path, read_only:bool = False, type:Literal[
     self.load_extension('sqlite')
     o = "(TYPE sqlite, " if type=='sqlite' else "("
     o += f"READ_ONLY  {read_only})"
-    q = f" '{path}' {f" AS {catalog_name}" if catalog_name else ""} {o}"
+    q = f"'{path}' {'AS ' + catalog_name if catalog_name else ''} {o}"
     self.sql(f"ATTACH {q}")
 
-# %% ../nbs/00_core.ipynb 65
+# %% ../nbs/00_core.ipynb 63
 def find_matches(pattern: str, items: List[str]) -> List[str]:
     regex_pattern = re.compile(pattern)
     return [item for item in items if regex_pattern.match(item)]
@@ -333,7 +333,7 @@ def drop(self: DuckDBPyConnection, pattern: str):
     dropping = find_matches('.'.join([schm, tbl]), [rec['schema']+'.'+rec['name'] for rec in db.tables.filter(f"catalog = '{db.catalog}'").to_recs()])
     for tbl in dropping: self.sql(f"DROP TABLE {tbl}")
 
-# %% ../nbs/00_core.ipynb 69
+# %% ../nbs/00_core.ipynb 67
 @patch
 def _create(self: DuckDBPyConnection, type: str, fileglob: str, table_name: Optional[str] = None, 
             filetype: Optional[Literal['csv', 'xlsx', 'json', 'parquet', 'sqlite']] = None, 
@@ -378,7 +378,7 @@ def create_view(self: DuckDBPyConnection,
     return self._create('VIEW', fileglob, view_name, filetype, replace, as_name, *args, **kwargs)
     
 
-# %% ../nbs/00_core.ipynb 86
+# %% ../nbs/00_core.ipynb 84
 @patch
 def import_from(self:DuckDBPyConnection, filepath=None, pre='', suf='', schema=None, replace=None):
     self.attach(filepath, catalog_name='import')
