@@ -4,7 +4,7 @@
 from __future__ import annotations
 import duckdb
 from duckdb import DuckDBPyConnection, DuckDBPyRelation
-from typing import List, Dict, Optional, Union, Any, Tuple, Set
+from typing import List, Dict, Optional, Union, Any, Tuple, Set, Literal
 from fastcore.all import store_attr, patch, L
 import numpy as np
 import pandas as pd
@@ -13,6 +13,7 @@ from fastcore.xtras import hl_md, dataclass_src
 from functools import wraps, partial
 from pathlib import Path
 from IPython.display import Markdown
+
 
 # %% auto 0
 __all__ = ['props', 'database', 'convertTypes', 'clean', 'custom_dir', 'create_patch_property', 'create_prop', 'noop', 'identity']
@@ -54,13 +55,11 @@ def q(self:DuckDBPyConnection, *args, **kwargs) -> List[Dict[str, Any]]:
 
 # %% ../nbs/00_core.ipynb 20
 @patch(as_prop=True)
-def tables(self: DuckDBPyConnection) -> DuckDBPyRelation:
+def tables(self: DuckDBPyConnection, catalog:str=None) -> DuckDBPyRelation:
     '''Returns a dictionary of tables in the database'''
-    base = "select distinct database_name as catalog, schema_name as schema"
-    tbls = "table_name as name, 'BASE TABLE' as type, comment from duckdb_tables()"
-    vws = "view_name as name, 'VIEW' as type, comment from duckdb_views()"
-    fltr = "where internal=False"
-    return self.sql(f"{base}, {tbls} {fltr} union all {base}, {vws} {fltr}")
+    q = f"from {catalog or self.catalog}.information_schema.tables"
+    s = f"'{catalog or self.catalog}' as catalog, table_schema as schema, table_name as name, table_type as type, table_comment as comment"
+    return self.sql(q).distinct().select(s)
 
 @patch(as_prop=True)
 def views(self: DuckDBPyConnection) -> DuckDBPyRelation:
@@ -82,7 +81,6 @@ def datamodel(self: DuckDBPyConnection, table_name:str) ->List[Dict]:
             for r in self.sql(f"PRAGMA table_info='{table_name}'").fetchall()]
 
 # %% ../nbs/00_core.ipynb 26
-from dataclasses import field, make_dataclass
 def convertTypes(s:str)->type:
     ''' Convert DuckDB types to Python and Numpy types'''
     d = {
@@ -144,7 +142,7 @@ def _get(self:DuckDBPyRelation, key):
     k = str(hash(self))+'_'+key
     return _saved[k] if k in _saved else None
 
-def custom_dir(c, add): return dir(type(c)) + list(c.__dict__.keys()) if hasattr(c, '__dict__') else [] + add
+def custom_dir(c, add): return sorted(dir(type(c)) + list(c.__dict__.keys()) if hasattr(c, '__dict__') else [] + add)
 
 def create_patch_property(name):
     @patch(as_prop=True)
@@ -156,7 +154,7 @@ props = ['cls', 'rel', 'model', 'meta']
 for p in props: setattr(DuckDBPyRelation, p, create_patch_property(p))
 
 @patch
-def __dir__(self:DuckDBPyRelation): return custom_dir(self, props)
+def __dir__(self:DuckDBPyRelation) -> List[str]: return custom_dir(DuckDBPyRelation, props)
     
 def create_prop(c, name, f): setattr(c, name, property(f))
 @patch(as_prop=True)
@@ -189,7 +187,7 @@ def table(self:DuckDBPyConnection, name:str, schema:str= None, catalog:str=None)
 
 
 
-# %% ../nbs/00_core.ipynb 33
+# %% ../nbs/00_core.ipynb 34
 @patch
 def _select(self:DuckDBPyRelation, k) -> DuckDBPyRelation:
     return self.select(k) if isinstance(k, str) else self.select(*k)
@@ -199,7 +197,7 @@ def c(self:DuckDBPyRelation):
     '''Column autocomplete'''
     return _Getter(self, 'column', self.columns, self._select)
 
-# %% ../nbs/00_core.ipynb 35
+# %% ../nbs/00_core.ipynb 36
 def noop(*args, **kwargs): return None
 def identity(x): return x
 
@@ -248,7 +246,7 @@ def shh(self:DuckDBPyConnection): raise NotImplementedError
 def __repr__(self:DuckDBPyConnection): return f'{self.__class__.__name__} ({self.catalog}_{self.schema})'
 
 
-# %% ../nbs/00_core.ipynb 39
+# %% ../nbs/00_core.ipynb 40
 @patch
 def __str__(self:DuckDBPyRelation): return f'{self.alias}'
 
