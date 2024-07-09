@@ -16,7 +16,8 @@ from IPython.display import Markdown
 
 
 # %% auto 0
-__all__ = ['props', 'database', 'convertTypes', 'clean', 'custom_dir', 'create_patch_property', 'create_prop', 'noop', 'identity']
+__all__ = ['props', 'database', 'convertTypes', 'clean', 'custom_dir', 'create_patch_property', 'create_prop', 'noop', 'identity',
+           'RemoteSqliteError', 'InvalidPathError', 'find_matches']
 
 # %% ../nbs/00_core.ipynb 13
 @wraps(duckdb.connect)
@@ -55,20 +56,28 @@ def q(self:DuckDBPyConnection, *args, **kwargs) -> List[Dict[str, Any]]:
 
 # %% ../nbs/00_core.ipynb 20
 @patch(as_prop=True)
-def tables(self: DuckDBPyConnection, catalog:str=None) -> DuckDBPyRelation:
-    '''Returns a dictionary of tables in the database'''
-    q = f"from {catalog or self.catalog}.information_schema.tables"
-    s = f"'{catalog or self.catalog}' as catalog, table_schema as schema, table_name as name, table_type as type, table_comment as comment"
-    return self.sql(q).distinct().select(s)
-
+def tables(self: DuckDBPyConnection) -> DuckDBPyRelation:
+    '''Returns the tables in the database'''
+    return self.sql(f"""
+        select distinct database_name as catalog, schema_name as schema, table_name as name,
+        'BASE TABLE' as type, comment from duckdb_tables() union all 
+        select distinct database_name as catalog, schema_name as schema, view_name as name, 
+        'VIEW' as type, comment from duckdb_views() where internal=False order by catalog, type, name""")
+    
 @patch(as_prop=True)
 def views(self: DuckDBPyConnection) -> DuckDBPyRelation:
-    '''Returns a dictionary of views in the database'''
+    '''Returns the views in current schema'''
     return self.tables.filter(f"type =='VIEW' and catalog='{self.catalog}' and schema = '{self.schema}'")
 @patch(as_prop=True)
 def base_tables(self: DuckDBPyConnection) -> DuckDBPyRelation:
-    '''Returns a dictionary of views in the database'''
+    '''Returns the base tables in current schema'''
     return self.tables.filter(f"type =='BASE TABLE' and catalog='{self.catalog}' and schema = '{self.schema}'")
+
+@patch(as_prop=True)
+def schemas(self: DuckDBPyConnection) -> DuckDBPyRelation:
+    '''Returns the schemas in the database'''
+    return self.tables.project(f"catalog || '_' || schema as catalog_schema").distinct()
+
 
 # %% ../nbs/00_core.ipynb 24
 @patch
@@ -130,17 +139,29 @@ def dataclass(self: DuckDBPyConnection,
 # %% ../nbs/00_core.ipynb 32
 _saved = {}
 
-@patch
-def _set(self:DuckDBPyRelation, k, v):
-    global _saved
-    # use hash to avoid clashes
-    _saved[str(hash(self))+'_'+k] = v
+def _set_attr(obj, k, v): #hash to avoid collisions
+    _saved[str(hash(obj)) + '_' + k] = v
+
+def _get_attr(obj, key):
+    k = str(hash(obj)) + '_' + key
+    return _saved[k] if k in _saved else None
 
 @patch
-def _get(self:DuckDBPyRelation, key):
-    global _saved
-    k = str(hash(self))+'_'+key
-    return _saved[k] if k in _saved else None
+def _set(self: DuckDBPyRelation, k, v):
+    _set_attr(self, k, v)
+
+@patch
+def _get(self: DuckDBPyRelation, key):
+    return _get_attr(self, key)
+
+@patch
+def _set(self: DuckDBPyConnection, k, v):
+    _set_attr(self, k, v)
+
+@patch
+def _get(self: DuckDBPyConnection, key):
+    return _get_attr(self, key)
+
 
 def custom_dir(c, add): return sorted(dir(type(c)) + list(c.__dict__.keys()) if hasattr(c, '__dict__') else [] + add)
 
@@ -187,7 +208,7 @@ def table(self:DuckDBPyConnection, name:str, schema:str= None, catalog:str=None)
 
 
 
-# %% ../nbs/00_core.ipynb 34
+# %% ../nbs/00_core.ipynb 33
 @patch
 def _select(self:DuckDBPyRelation, k) -> DuckDBPyRelation:
     return self.select(k) if isinstance(k, str) else self.select(*k)
@@ -214,18 +235,24 @@ class _Getter:
         if k[0]!='_': return self.get(k)
         else: raise AttributeError 
 
+@patch
+def use(self:DuckDBPyConnection, catalog_schema:str=None, catalog:str=None, schema=None) -> None:
+    if not catalog_schema and not catalog and not schema: return self
+    catalog, schema = catalog_schema.split('_') if catalog_schema else (catalog, schema)
+    catalog = catalog or self.catalog
+    schema = schema or self.schema
+    self.sql(f"use {catalog}.{schema}")
 
 @patch
-def use(self:DuckDBPyConnection, catalog_schema:str=None, catalog:str=None, schema=None):
-    catalog, schema = catalog_schema.split('_')
-    self.sql(f"use {catalog}.{schema}")
-    print("Using ", self)
+def get_schema(self: DuckDBPyConnection, catalog_schema: str):
+    self.use(catalog_schema)
+    self._set(catalog_schema, self)
     return self
 
 @patch(as_prop=True) # tables
 def s(self:DuckDBPyConnection): 
     '''Autocomplete functonality for schemas'''
-    return _Getter(self, 'schema', self.tables.project(f"catalog || '_' || schema").distinct().to_list(), self.use)
+    return _Getter(self, 'schema', self.tables.project(f"catalog || '_' || schema").distinct().to_list(), self.get_schema)
 @patch(as_prop=True) # tables
 def t(self:DuckDBPyConnection): 
     '''Autocomplete functonality for tables'''
@@ -246,7 +273,7 @@ def shh(self:DuckDBPyConnection): raise NotImplementedError
 def __repr__(self:DuckDBPyConnection): return f'{self.__class__.__name__} ({self.catalog}_{self.schema})'
 
 
-# %% ../nbs/00_core.ipynb 40
+# %% ../nbs/00_core.ipynb 42
 @patch
 def __str__(self:DuckDBPyRelation): return f'{self.alias}'
 
@@ -267,3 +294,96 @@ def _repr_markdown_(self: DuckDBPyRelation):
     return markdown
 
 
+
+# %% ../nbs/00_core.ipynb 59
+class RemoteSqliteError(Exception): pass
+class InvalidPathError(Exception): pass
+
+@patch
+def attach(self: DuckDBPyConnection, path, read_only:bool = False, type:Literal['duckdb' | 'sqlite']='duckdb', catalog_name:str=None) -> None:
+    type = 'sqlite' if Path(path).suffix =='.sqlite' else type
+    if path.startswith(('s3://', 'gcp://', 'https://')):
+        self.install_extension('httpfs')
+        self.load_extension('httpfs')
+        read_only = True
+        if type =='sqlite': raise RemoteSqliteError('Cannot attach to a remote sqlite database.')
+    elif not Path(path).exists(): raise InvalidPathError(f"Couldn't find {path}")
+    self.install_extension('sqlite')
+    self.load_extension('sqlite')
+    o = "(TYPE sqlite, " if type=='sqlite' else "("
+    o += f"READ_ONLY  {read_only})"
+    q = f" '{path}' {f" AS {catalog_name}" if catalog_name else ""} {o}"
+    self.sql(f"ATTACH {q}")
+
+# %% ../nbs/00_core.ipynb 65
+def find_matches(pattern: str, items: List[str]) -> List[str]:
+    regex_pattern = re.compile(pattern)
+    return [item for item in items if regex_pattern.match(item)]
+    
+@patch
+def __contains__(self:DuckDBPyConnection, name:str):
+    schm, _, tbl = name.rpartition('.')
+    return tbl in self.tables.filter(f"schema = '{schm or self.schema}'").select('name').to_list()
+
+@patch
+def drop(self: DuckDBPyConnection, pattern: str):
+    '''Drop a table or view'''
+    schm, _, tbl = pattern.rpartition('.')
+    schm = schm or self.schema
+    dropping = find_matches('.'.join([schm, tbl]), [rec['schema']+'.'+rec['name'] for rec in db.tables.filter(f"catalog = '{db.catalog}'").to_recs()])
+    for tbl in dropping: self.sql(f"DROP TABLE {tbl}")
+
+# %% ../nbs/00_core.ipynb 69
+@patch
+def _create(self: DuckDBPyConnection, type: str, fileglob: str, table_name: Optional[str] = None, 
+            filetype: Optional[Literal['csv', 'xlsx', 'json', 'parquet', 'sqlite']] = None, 
+            replace: bool = False, as_name: Optional[str] = None, *args, **kwargs):
+    filepath, name = Path(fileglob), as_name or table_name or Path(fileglob).stem
+    if name in self and not replace: raise ValueError(f"Table {name} already exists")
+    self.drop(name)
+    filetype = filetype or filepath.suffix[1:]
+    options = ', '.join(f"{k}={repr(v)}" for k, v in kwargs.items())
+    
+    if filetype == 'sqlite':
+        self.install_extension('sqlite'), self.load_extension('sqlite')
+        self.sql(f"CREATE {type} {name} AS SELECT * FROM sqlite_scan('{filepath}', {table_name} {options})")
+    elif filetype == 'xlsx':
+        self.install_extension('spatial'), self.load_extension('spatial')
+        self.sql(f"CREATE {type} {name} AS SELECT * FROM st_read('{filepath}' {options})")
+    else:
+        getattr(self, f'read_{filetype}')(fileglob, *args, **kwargs).to_table(name)
+
+@patch
+def create_table(self: DuckDBPyConnection, 
+                 fileglob: str, # file path or glob
+                 table_name: Optional[str] = None, # table name
+                 filetype: Optional[Literal['csv', 'xlsx', 'json', 'parquet', 'sqlite']] = None, # file type
+                 as_name:Optional[str]=None ,
+                 replace: bool = False, # replace existing table
+                 *args, **kwargs 
+                 ):
+    '''Create a table from a file'''
+    return self._create('TABLE', fileglob, table_name, filetype, replace, as_name, *args, **kwargs)
+
+@patch
+def create_view(self: DuckDBPyConnection, 
+                 fileglob: str, # file path or glob
+                 view_name: Optional[str] = None, # view name
+                 filetype: Optional[Literal['csv', 'xlsx', 'json', 'parquet', 'sqlite']] = None, # file type
+                 replace: bool = False,  # replace existing view
+                 as_name:Optional[str]=None ,
+                 *args, **kwargs
+                 ):
+    '''Create a view from a file'''
+    return self._create('VIEW', fileglob, view_name, filetype, replace, as_name, *args, **kwargs)
+    
+
+# %% ../nbs/00_core.ipynb 86
+@patch
+def import_from(self:DuckDBPyConnection, filepath=None, pre='', suf='', schema=None, replace=None):
+    self.attach(filepath, catalog_name='import')
+    list =  self.tables.filter("catalog = 'import' and type='BASE TABLE'").select('name').to_list()
+    self.sql('detach import')
+    schema = schema or self.schema
+    db.sql(f"CREATE SCHEMA IF NOT EXISTS {schema}")
+    for tbl in list: db.create_table(fileglob=filepath, filetype='sqlite', table_name=tbl, as_name=schema+'.'+pre+tbl+suf, replace=replace)
