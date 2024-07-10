@@ -4,6 +4,6 @@ project:
 website:
   title: "fastduck"
   site-url: "https://fredguth.github.io/fastduck"
-  description: ""
+  description: "A bit of extra usability for duckdb... inspired by fastlite and sqlite_utils"
   repo-branch: main
   repo-url: "https://github.com/fredguth/fastduck"
