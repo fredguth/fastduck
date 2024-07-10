@@ -273,16 +273,16 @@ def shh(self:DuckDBPyConnection): raise NotImplementedError
 def __repr__(self:DuckDBPyConnection): return f'{self.__class__.__name__} ({self.catalog}_{self.schema})'
 
 
-# %% ../nbs/00_core.ipynb 41
+# %% ../nbs/00_core.ipynb 43
 @patch
 def __str__(self:DuckDBPyRelation): return f'{self.alias}'
 
 @patch
 def __repr__(self:DuckDBPyRelation): 
-    return f"<{self.__class__.__name__} {self.meta['type'] if self.meta else ''} **{self.alias}** ({self.shape[0]} rows, {self.shape[1]} cols)>\n\n"
+    return f"{self.__class__.__name__} {self.meta['type'] if self.meta else ''} {self.alias if self.alias[:7]!='unnamed' else ''} \n\n"
 @patch
 def _repr_markdown_(self: DuckDBPyRelation): 
-    markdown =  f"{self.__repr__()}\n\n"
+    markdown =  f"#### {self.__repr__()} "
     if self.meta and self.meta['comment']: markdown += f"> {self.meta['comment']}\n\n"
     df = self.df()
     if self.shape[0] > 5: 
@@ -290,12 +290,28 @@ def _repr_markdown_(self: DuckDBPyRelation):
         tail = df.tail(2)
         ellipsis = pd.DataFrame([["..."] * df.shape[1]], columns=df.columns)
         df = pd.concat([head, ellipsis, tail])
-    markdown += df.to_markdown(index=False)
+    markdown += df.to_markdown(index=False, tablefmt="pipe")
+    markdown += f"\n\n {self.shape[0]} rows  x  {self.shape[1]} cols "
     return markdown
 
+@patch
+def _repr_html_(self: DuckDBPyRelation):
+   
+    df = self.df()
+    if self.shape[0] > 5: 
+        head = df.head(3)
+        tail = df.tail(2)
+        ellipsis = pd.DataFrame([["..."] * df.shape[1]], columns=df.columns)
+        df = pd.concat([head, ellipsis, tail])
+    h = df.to_html(index=False)
+    h += f"<p>{self.shape[0]} rows x  {self.shape[1]} cols &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{self.__class__.__name__} {self.meta['type'].replace(' ', '_') if self.meta else ''} {self.alias if self.alias[:7]!='unnamed' else ''} </p>"
+    h += f"<p><i>{self.meta['comment']}</i></p>\n\n" if self.meta and self.meta['comment'] else ''
+    return h
 
 
-# %% ../nbs/00_core.ipynb 57
+
+
+# %% ../nbs/00_core.ipynb 59
 class RemoteSqliteError(Exception): pass
 class InvalidPathError(Exception): pass
 
@@ -315,7 +331,7 @@ def attach(self: DuckDBPyConnection, path, read_only:bool = False, type:Literal[
     q = f"'{path}' {'AS ' + catalog_name if catalog_name else ''} {o}"
     self.sql(f"ATTACH {q}")
 
-# %% ../nbs/00_core.ipynb 63
+# %% ../nbs/00_core.ipynb 65
 def find_matches(pattern: str, items: List[str]) -> List[str]:
     regex_pattern = re.compile(pattern)
     return [item for item in items if regex_pattern.match(item)]
@@ -333,7 +349,7 @@ def drop(self: DuckDBPyConnection, pattern: str):
     dropping = find_matches('.'.join([schm, tbl]), [rec['schema']+'.'+rec['name'] for rec in db.tables.filter(f"catalog = '{db.catalog}'").to_recs()])
     for tbl in dropping: self.sql(f"DROP TABLE {tbl}")
 
-# %% ../nbs/00_core.ipynb 67
+# %% ../nbs/00_core.ipynb 69
 @patch
 def _create(self: DuckDBPyConnection, type: str, fileglob: str, table_name: Optional[str] = None, 
             filetype: Optional[Literal['csv', 'xlsx', 'json', 'parquet', 'sqlite']] = None, 
@@ -378,7 +394,7 @@ def create_view(self: DuckDBPyConnection,
     return self._create('VIEW', fileglob, view_name, filetype, replace, as_name, *args, **kwargs)
     
 
-# %% ../nbs/00_core.ipynb 84
+# %% ../nbs/00_core.ipynb 86
 @patch
 def import_from(self:DuckDBPyConnection, filepath=None, pre='', suf='', schema=None, replace=None):
     self.attach(filepath, catalog_name='import')
