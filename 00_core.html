@@ -1,0 +1,2425 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.550">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>fastduck - Source</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="styles.css">
+<meta property="og:title" content="fastduck - Source">
+<meta property="og:description" content="A bit of extra usability for duckdb… inspired by fastlite and sqlite_utils">
+<meta property="og:site_name" content="fastduck">
+<meta name="twitter:title" content="fastduck - Source">
+<meta name="twitter:description" content="A bit of extra usability for duckdb… inspired by fastlite and sqlite_utils">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">fastduck</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/fredguth/fastduck"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./00_core.html">Source</a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">fastduck</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./00_core.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Source</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#improving-connection" id="toc-improving-connection" class="nav-link active" data-scroll-target="#improving-connection">Improving Connection</a>
+  <ul>
+  <li><a href="#pycapsule.connect" id="toc-pycapsule.connect" class="nav-link" data-scroll-target="#pycapsule.connect">PyCapsule.connect</a></li>
+  <li><a href="#duckdbpyconnection.q" id="toc-duckdbpyconnection.q" class="nav-link" data-scroll-target="#duckdbpyconnection.q">DuckDBPyConnection.q</a></li>
+  <li><a href="#duckdbpyrelation.to_list" id="toc-duckdbpyrelation.to_list" class="nav-link" data-scroll-target="#duckdbpyrelation.to_list">DuckDBPyRelation.to_list</a></li>
+  <li><a href="#duckdbpyrelation.to_recs" id="toc-duckdbpyrelation.to_recs" class="nav-link" data-scroll-target="#duckdbpyrelation.to_recs">DuckDBPyRelation.to_recs</a></li>
+  <li><a href="#duckdbpyrelation.name" id="toc-duckdbpyrelation.name" class="nav-link" data-scroll-target="#duckdbpyrelation.name">DuckDBPyRelation.name</a></li>
+  <li><a href="#duckdbpyconnection.schema" id="toc-duckdbpyconnection.schema" class="nav-link" data-scroll-target="#duckdbpyconnection.schema">DuckDBPyConnection.schema</a></li>
+  <li><a href="#duckdbpyconnection.catalog" id="toc-duckdbpyconnection.catalog" class="nav-link" data-scroll-target="#duckdbpyconnection.catalog">DuckDBPyConnection.catalog</a></li>
+  <li><a href="#duckdbpyconnection.schemas" id="toc-duckdbpyconnection.schemas" class="nav-link" data-scroll-target="#duckdbpyconnection.schemas">DuckDBPyConnection.schemas</a></li>
+  <li><a href="#duckdbpyconnection.base_tables" id="toc-duckdbpyconnection.base_tables" class="nav-link" data-scroll-target="#duckdbpyconnection.base_tables">DuckDBPyConnection.base_tables</a></li>
+  <li><a href="#duckdbpyconnection.views" id="toc-duckdbpyconnection.views" class="nav-link" data-scroll-target="#duckdbpyconnection.views">DuckDBPyConnection.views</a></li>
+  <li><a href="#duckdbpyconnection.tables" id="toc-duckdbpyconnection.tables" class="nav-link" data-scroll-target="#duckdbpyconnection.tables">DuckDBPyConnection.tables</a></li>
+  <li><a href="#duckdbpyconnection.datamodel" id="toc-duckdbpyconnection.datamodel" class="nav-link" data-scroll-target="#duckdbpyconnection.datamodel">DuckDBPyConnection.datamodel</a></li>
+  <li><a href="#duckdbpyconnection.dataclass" id="toc-duckdbpyconnection.dataclass" class="nav-link" data-scroll-target="#duckdbpyconnection.dataclass">DuckDBPyConnection.dataclass</a></li>
+  <li><a href="#clean" id="toc-clean" class="nav-link" data-scroll-target="#clean">clean</a></li>
+  <li><a href="#converttypes" id="toc-converttypes" class="nav-link" data-scroll-target="#converttypes">convertTypes</a></li>
+  </ul></li>
+  <li><a href="#relation-utilities" id="toc-relation-utilities" class="nav-link" data-scroll-target="#relation-utilities">Relation utilities</a>
+  <ul>
+  <li><a href="#duckdbpyconnection.table" id="toc-duckdbpyconnection.table" class="nav-link" data-scroll-target="#duckdbpyconnection.table">DuckDBPyConnection.table</a></li>
+  <li><a href="#duckdbpyrelation.rel" id="toc-duckdbpyrelation.rel" class="nav-link" data-scroll-target="#duckdbpyrelation.rel">DuckDBPyRelation.rel</a></li>
+  <li><a href="#duckdbpyrelation.meta" id="toc-duckdbpyrelation.meta" class="nav-link" data-scroll-target="#duckdbpyrelation.meta">DuckDBPyRelation.meta</a></li>
+  <li><a href="#duckdbpyrelation.model" id="toc-duckdbpyrelation.model" class="nav-link" data-scroll-target="#duckdbpyrelation.model">DuckDBPyRelation.model</a></li>
+  <li><a href="#duckdbpyrelation.cls" id="toc-duckdbpyrelation.cls" class="nav-link" data-scroll-target="#duckdbpyrelation.cls">DuckDBPyRelation.cls</a></li>
+  <li><a href="#create_prop" id="toc-create_prop" class="nav-link" data-scroll-target="#create_prop">create_prop</a></li>
+  <li><a href="#create_patch_property" id="toc-create_patch_property" class="nav-link" data-scroll-target="#create_patch_property">create_patch_property</a></li>
+  <li><a href="#custom_dir" id="toc-custom_dir" class="nav-link" data-scroll-target="#custom_dir">custom_dir</a></li>
+  <li><a href="#duckdbpyrelation.c" id="toc-duckdbpyrelation.c" class="nav-link" data-scroll-target="#duckdbpyrelation.c">DuckDBPyRelation.c</a></li>
+  <li><a href="#autocomplete" id="toc-autocomplete" class="nav-link" data-scroll-target="#autocomplete">Autocomplete</a></li>
+  <li><a href="#duckdbpyconnection.shh" id="toc-duckdbpyconnection.shh" class="nav-link" data-scroll-target="#duckdbpyconnection.shh">DuckDBPyConnection.shh</a></li>
+  <li><a href="#duckdbpyconnection.fns" id="toc-duckdbpyconnection.fns" class="nav-link" data-scroll-target="#duckdbpyconnection.fns">DuckDBPyConnection.fns</a></li>
+  <li><a href="#duckdbpyconnection.v" id="toc-duckdbpyconnection.v" class="nav-link" data-scroll-target="#duckdbpyconnection.v">DuckDBPyConnection.v</a></li>
+  <li><a href="#duckdbpyconnection.t" id="toc-duckdbpyconnection.t" class="nav-link" data-scroll-target="#duckdbpyconnection.t">DuckDBPyConnection.t</a></li>
+  <li><a href="#duckdbpyconnection.s" id="toc-duckdbpyconnection.s" class="nav-link" data-scroll-target="#duckdbpyconnection.s">DuckDBPyConnection.s</a></li>
+  <li><a href="#duckdbpyconnection.get_schema" id="toc-duckdbpyconnection.get_schema" class="nav-link" data-scroll-target="#duckdbpyconnection.get_schema">DuckDBPyConnection.get_schema</a></li>
+  <li><a href="#duckdbpyconnection.use" id="toc-duckdbpyconnection.use" class="nav-link" data-scroll-target="#duckdbpyconnection.use">DuckDBPyConnection.use</a></li>
+  <li><a href="#identity" id="toc-identity" class="nav-link" data-scroll-target="#identity">identity</a></li>
+  <li><a href="#noop" id="toc-noop" class="nav-link" data-scroll-target="#noop">noop</a>
+  <ul class="collapse">
+  <li><a href="#replacement-scans" id="toc-replacement-scans" class="nav-link" data-scroll-target="#replacement-scans">Replacement Scans</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#database-management" id="toc-database-management" class="nav-link" data-scroll-target="#database-management">Database management</a>
+  <ul>
+  <li><a href="#attach-detach-and-use" id="toc-attach-detach-and-use" class="nav-link" data-scroll-target="#attach-detach-and-use">Attach, Detach and Use</a></li>
+  <li><a href="#duckdbpyconnection.attach" id="toc-duckdbpyconnection.attach" class="nav-link" data-scroll-target="#duckdbpyconnection.attach">DuckDBPyConnection.attach</a></li>
+  <li><a href="#invalidpatherror" id="toc-invalidpatherror" class="nav-link" data-scroll-target="#invalidpatherror">InvalidPathError</a></li>
+  <li><a href="#remotesqliteerror" id="toc-remotesqliteerror" class="nav-link" data-scroll-target="#remotesqliteerror">RemoteSqliteError</a>
+  <ul class="collapse">
+  <li><a href="#drop" id="toc-drop" class="nav-link" data-scroll-target="#drop">Drop</a></li>
+  </ul></li>
+  <li><a href="#duckdbpyconnection.drop" id="toc-duckdbpyconnection.drop" class="nav-link" data-scroll-target="#duckdbpyconnection.drop">DuckDBPyConnection.drop</a></li>
+  <li><a href="#find_matches" id="toc-find_matches" class="nav-link" data-scroll-target="#find_matches">find_matches</a>
+  <ul class="collapse">
+  <li><a href="#create-table-or-view" id="toc-create-table-or-view" class="nav-link" data-scroll-target="#create-table-or-view">Create Table or View</a></li>
+  </ul></li>
+  <li><a href="#duckdbpyconnection.create_view" id="toc-duckdbpyconnection.create_view" class="nav-link" data-scroll-target="#duckdbpyconnection.create_view">DuckDBPyConnection.create_view</a></li>
+  <li><a href="#duckdbpyconnection.create_table" id="toc-duckdbpyconnection.create_table" class="nav-link" data-scroll-target="#duckdbpyconnection.create_table">DuckDBPyConnection.create_table</a></li>
+  <li><a href="#duckdbpyconnection.import_from" id="toc-duckdbpyconnection.import_from" class="nav-link" data-scroll-target="#duckdbpyconnection.import_from">DuckDBPyConnection.import_from</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/fredguth/fastduck/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Source</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<blockquote class="blockquote">
+<p>Wrapping DuckDB Python API</p>
+</blockquote>
+<p>When you <code>import duckdb</code>, there are two main concepts that you have to handle:</p>
+<p>A <em>DuckDBPyConnection</em> represents a connection to a DuckDB database in a file or memory</p>
+<p>DuckDB API has no concept of a Database, only of a connection that may envolve different attached databases (or catalogs) and schemas.</p>
+<p>A Catalog is just a holder for schemas, and schemas hold catalog entries, like tables, views, functions, types, etc..</p>
+<p>We will change this behaviour in a bit…</p>
+<p>A DuckDBPyRelation represents a query. It is a table-like object that will be lazy executed and can be queried further.</p>
+<p>Once it’s executed then yes, it contains the result set.</p>
+<p>But when further projections are made on it, that result set is not used, the projections are just done on top of the original query as a subquery</p>
+<p><code>duckdb.table('tbl').sql("select a")</code></p>
+<p>Really becomes, in essence: <code>select a from (select * from tbl)</code></p>
+<div id="cell-6" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>db <span class="op">=</span> duckdb.<span class="ex">connect</span>()</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>db.sql(<span class="ss">f"FROM duckdb_tables()"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<pre><code>┌───────────────┬──────────────┬─────────────┬────────────┬───┬─────────────┬──────────────────────┬─────────┐
+│ database_name │ database_oid │ schema_name │ schema_oid │ … │ index_count │ check_constraint_c…  │   sql   │
+│    varchar    │    int64     │   varchar   │   int64    │   │    int64    │        int64         │ varchar │
+├───────────────┴──────────────┴─────────────┴────────────┴───┴─────────────┴──────────────────────┴─────────┤
+│                                                   0 rows                                                   │
+└────────────────────────────────────────────────────────────────────────────────────────────────────────────┘</code></pre>
+</div>
+</div>
+<div id="cell-7" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="bu">type</span>(db.sql(<span class="ss">f"SELECT table_name FROM duckdb_tables()"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="4">
+<pre><code>duckdb.duckdb.DuckDBPyRelation</code></pre>
+</div>
+</div>
+<div id="cell-8" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>db.close()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="improving-connection" class="level2">
+<h2 class="anchored" data-anchor-id="improving-connection">Improving Connection</h2>
+<p>We want the developer to understand the connection as a database.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> duckdb</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>conn <span class="op">=</span> duckdb.<span class="ex">connect</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>becomes</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastduck <span class="im">import</span> database</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>db <span class="op">=</span> database()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>By acessing the same Python API using <code>fastduck</code>, the developer shall get some niceties.</p>
+<hr>
+<section id="pycapsule.connect" class="level3">
+<h3 class="anchored" data-anchor-id="pycapsule.connect">PyCapsule.connect</h3>
+<p>connect(database: str = ‘:memory:’, read_only: bool = False, config: dict = None) -&gt; duckdb.DuckDBPyConnection</p>
+<p>Create a DuckDB database instance. Can take a database file name to read/write persistent data and a read_only flag if no changes are desired</p>
+<p>Let’s start by simplifying the access to some information on the current catalog and schema in the connection.</p>
+<div id="cell-13" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>db <span class="op">=</span> database(<span class="st">'../data/chinook.duckdb'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<hr>
+<p><a href="https://github.com/fredguth/fastduck/blob/main/fastduck/core.py#L51" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="duckdbpyconnection.q" class="level3">
+<h3 class="anchored" data-anchor-id="duckdbpyconnection.q">DuckDBPyConnection.q</h3>
+<blockquote class="blockquote">
+<pre><code> DuckDBPyConnection.q (*args, **kwargs)</code></pre>
+</blockquote>
+<p>Run a query and return the result as a list of records</p>
+<hr>
+<p><a href="https://github.com/fredguth/fastduck/blob/main/fastduck/core.py#L47" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="duckdbpyrelation.to_list" class="level3">
+<h3 class="anchored" data-anchor-id="duckdbpyrelation.to_list">DuckDBPyRelation.to_list</h3>
+<blockquote class="blockquote">
+<pre><code> DuckDBPyRelation.to_list ()</code></pre>
+</blockquote>
+<p>The relation as a list</p>
+<hr>
+<p><a href="https://github.com/fredguth/fastduck/blob/main/fastduck/core.py#L43" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="duckdbpyrelation.to_recs" class="level3">
+<h3 class="anchored" data-anchor-id="duckdbpyrelation.to_recs">DuckDBPyRelation.to_recs</h3>
+<blockquote class="blockquote">
+<pre><code> DuckDBPyRelation.to_recs ()</code></pre>
+</blockquote>
+<p>The relation as a list of records</p>
+<hr>
+<p><a href="https://github.com/fredguth/fastduck/blob/main/fastduck/core.py#L37" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="duckdbpyrelation.name" class="level3">
+<h3 class="anchored" data-anchor-id="duckdbpyrelation.name">DuckDBPyRelation.name</h3>
+<blockquote class="blockquote">
+<pre><code> DuckDBPyRelation.name ()</code></pre>
+</blockquote>
+<hr>
+<p><a href="https://github.com/fredguth/fastduck/blob/main/fastduck/core.py#L34" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="duckdbpyconnection.schema" class="level3">
+<h3 class="anchored" data-anchor-id="duckdbpyconnection.schema">DuckDBPyConnection.schema</h3>
+<blockquote class="blockquote">
+<pre><code> DuckDBPyConnection.schema ()</code></pre>
+</blockquote>
+<hr>
+<p><a href="https://github.com/fredguth/fastduck/blob/main/fastduck/core.py#L31" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="duckdbpyconnection.catalog" class="level3">
+<h3 class="anchored" data-anchor-id="duckdbpyconnection.catalog">DuckDBPyConnection.catalog</h3>
+<blockquote class="blockquote">
+<pre><code> DuckDBPyConnection.catalog ()</code></pre>
+</blockquote>
+<div id="cell-20" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>album <span class="op">=</span> db.sql(<span class="st">"select * from Album"</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>album[<span class="st">'AlbumId'</span>, <span class="st">'Title'</span>].limit(<span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="9">
+<pre><code>┌─────────┬───────────────────────────────────────┐
+│ AlbumId │                 Title                 │
+│  int32  │                varchar                │
+├─────────┼───────────────────────────────────────┤
+│       1 │ For Those About To Rock We Salute You │
+│       2 │ Balls to the Wall                     │
+│       3 │ Restless and Wild                     │
+│       4 │ Let There Be Rock                     │
+│       5 │ Big Ones                              │
+└─────────┴───────────────────────────────────────┘</code></pre>
+</div>
+</div>
+<div id="cell-21" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>db.table(<span class="st">'Album'</span>)[<span class="st">'AlbumId'</span>, <span class="st">'Title'</span>].limit(<span class="dv">2</span>).to_recs()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="10">
+<pre><code>[{'AlbumId': 1, 'Title': 'For Those About To Rock We Salute You'},
+ {'AlbumId': 2, 'Title': 'Balls to the Wall'}]</code></pre>
+</div>
+</div>
+<p>We also need a way to know the tables in the database.</p>
+<hr>
+<p><a href="https://github.com/fredguth/fastduck/blob/main/fastduck/core.py#L77" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="duckdbpyconnection.schemas" class="level3">
+<h3 class="anchored" data-anchor-id="duckdbpyconnection.schemas">DuckDBPyConnection.schemas</h3>
+<blockquote class="blockquote">
+<pre><code> DuckDBPyConnection.schemas ()</code></pre>
+</blockquote>
+<p>Returns the schemas in the database</p>
+<hr>
+<p><a href="https://github.com/fredguth/fastduck/blob/main/fastduck/core.py#L72" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="duckdbpyconnection.base_tables" class="level3">
+<h3 class="anchored" data-anchor-id="duckdbpyconnection.base_tables">DuckDBPyConnection.base_tables</h3>
+<blockquote class="blockquote">
+<pre><code> DuckDBPyConnection.base_tables ()</code></pre>
+</blockquote>
+<p>Returns the base tables in current schema</p>
+<hr>
+<p><a href="https://github.com/fredguth/fastduck/blob/main/fastduck/core.py#L68" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="duckdbpyconnection.views" class="level3">
+<h3 class="anchored" data-anchor-id="duckdbpyconnection.views">DuckDBPyConnection.views</h3>
+<blockquote class="blockquote">
+<pre><code> DuckDBPyConnection.views ()</code></pre>
+</blockquote>
+<p>Returns the views in current schema</p>
+<hr>
+<p><a href="https://github.com/fredguth/fastduck/blob/main/fastduck/core.py#L59" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="duckdbpyconnection.tables" class="level3">
+<h3 class="anchored" data-anchor-id="duckdbpyconnection.tables">DuckDBPyConnection.tables</h3>
+<blockquote class="blockquote">
+<pre><code> DuckDBPyConnection.tables ()</code></pre>
+</blockquote>
+<p>Returns the tables in the database</p>
+<div id="cell-27" class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>db.schemas</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="12">
+<pre><code>┌────────────────┐
+│ catalog_schema │
+│    varchar     │
+├────────────────┤
+│ chinook_main   │
+└────────────────┘</code></pre>
+</div>
+</div>
+<div id="cell-28" class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>db.views.limit(<span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="13">
+<pre><code>┌─────────┬─────────┬───────────┬─────────┬─────────────┐
+│ catalog │ schema  │   name    │  type   │   comment   │
+│ varchar │ varchar │  varchar  │ varchar │   varchar   │
+├─────────┼─────────┼───────────┼─────────┼─────────────┤
+│ chinook │ main    │ a_view    │ VIEW    │ Just a view │
+│ chinook │ main    │ temp_view │ VIEW    │ NULL        │
+└─────────┴─────────┴───────────┴─────────┴─────────────┘</code></pre>
+</div>
+</div>
+<p>The functions bellow add some utilities that are useful for working with tables and views in a database.</p>
+<hr>
+<p><a href="https://github.com/fredguth/fastduck/blob/main/fastduck/core.py#L84" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="duckdbpyconnection.datamodel" class="level3">
+<h3 class="anchored" data-anchor-id="duckdbpyconnection.datamodel">DuckDBPyConnection.datamodel</h3>
+<blockquote class="blockquote">
+<pre><code> DuckDBPyConnection.datamodel (table_name:str)</code></pre>
+</blockquote>
+<p>Returns the data model of a table or view. The columns names, types, nullable status, default value and primary key status.</p>
+<div id="cell-31" class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>db.datamodel(<span class="st">'Artist'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="15">
+<pre><code>[{'name': 'ArtistId',
+  'type': 'INTEGER',
+  'nullable': False,
+  'default': None,
+  'pk': True},
+ {'name': 'Name',
+  'type': 'VARCHAR',
+  'nullable': True,
+  'default': None,
+  'pk': False}]</code></pre>
+</div>
+</div>
+<hr>
+<p><a href="https://github.com/fredguth/fastduck/blob/main/fastduck/core.py#L127" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="duckdbpyconnection.dataclass" class="level3">
+<h3 class="anchored" data-anchor-id="duckdbpyconnection.dataclass">DuckDBPyConnection.dataclass</h3>
+<blockquote class="blockquote">
+<pre><code> DuckDBPyConnection.dataclass (table_name:str, pref='', suf='',
+                               cls_name:str=None)</code></pre>
+</blockquote>
+<p>Creates a <code>dataclass</code> type from a table or view in the database.</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>table_name</td>
+<td>str</td>
+<td></td>
+<td>table or view name</td>
+</tr>
+<tr class="even">
+<td>pref</td>
+<td>str</td>
+<td></td>
+<td>prefix to add to the field names</td>
+</tr>
+<tr class="odd">
+<td>suf</td>
+<td>str</td>
+<td></td>
+<td>suffix to add to the field names</td>
+</tr>
+<tr class="even">
+<td>cls_name</td>
+<td>str</td>
+<td>None</td>
+<td>defaults to table_name</td>
+</tr>
+<tr class="odd">
+<td><strong>Returns</strong></td>
+<td><strong>type</strong></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p><a href="https://github.com/fredguth/fastduck/blob/main/fastduck/core.py#L122" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="clean" class="level3">
+<h3 class="anchored" data-anchor-id="clean">clean</h3>
+<blockquote class="blockquote">
+<pre><code> clean (s)</code></pre>
+</blockquote>
+<hr>
+<p><a href="https://github.com/fredguth/fastduck/blob/main/fastduck/core.py#L93" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="converttypes" class="level3">
+<h3 class="anchored" data-anchor-id="converttypes">convertTypes</h3>
+<blockquote class="blockquote">
+<pre><code> convertTypes (s:str)</code></pre>
+</blockquote>
+<p>Convert DuckDB types to Python and Numpy types</p>
+<div id="cell-35" class="cell" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>artist_dc <span class="op">=</span> db.dataclass(<span class="st">'Artist'</span>)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>src <span class="op">=</span> dataclass_src(artist_dc)</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>hl_md(src, <span class="st">'python'</span>) <span class="co"># fix error in nbdev_prepare</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="17">
+<div class="sourceCode" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="at">@dataclass</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Artist:</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>    ArtistId: int32 <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>    Name: <span class="bu">str</span> <span class="op">|</span> <span class="va">None</span> <span class="op">=</span> <span class="va">None</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="cell-36" class="cell" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>acdc <span class="op">=</span> db.sql(<span class="ss">f"select * from artist where artist.Name like 'AC/%'"</span>).df().to_dict(orient<span class="op">=</span><span class="st">'records'</span>)</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>acdc</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="18">
+<pre><code>[{'ArtistId': 1, 'Name': 'AC/DC'}]</code></pre>
+</div>
+</div>
+<div id="cell-37" class="cell" data-execution_count="19">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>acdc_object <span class="op">=</span> artist_dc(<span class="op">**</span>acdc[<span class="dv">0</span>])</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>acdc_object</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="19">
+<pre><code>Artist(ArtistId=1, Name='AC/DC')</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="relation-utilities" class="level2">
+<h2 class="anchored" data-anchor-id="relation-utilities">Relation utilities</h2>
+<p>Once we know that a certain <code>DuckDBPyRelation</code> is a table (or view), we can also make it keep some valuable props.</p>
+<hr>
+<p><a href="https://github.com/fredguth/fastduck/blob/main/fastduck/core.py#L195" target="_blank" style="float:right; font-size:smaller">source</a></p>
+<section id="duckdbpyconnection.table" class="level3">
+<h3 class="anchored" data-anchor-id="duckdbpyconnection.table">DuckDBPyConnection.table</h3>
+<blockquote class="blockquote">
+<pre><code> DuckDBPyConnection.table (name:str, schema:str=None, catalog:str=None)</code></pre>
+</blockquote>
+<hr>
+<p><a href="https://github.com/fredguth/fastduck/blob/main/fastduck/core.py#L191" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="duckdbpyrelation.rel" class="level3">
+<h3 class="anchored" data-anchor-id="duckdbpyrelation.rel">DuckDBPyRelation.rel</h3>
+<blockquote class="blockquote">
+<pre><code> DuckDBPyRelation.rel ()</code></pre>
+</blockquote>
+<hr>
+<p><a href="https://github.com/fredguth/fastduck/blob/main/fastduck/core.py#L188" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="duckdbpyrelation.meta" class="level3">
+<h3 class="anchored" data-anchor-id="duckdbpyrelation.meta">DuckDBPyRelation.meta</h3>
+<blockquote class="blockquote">
+<pre><code> DuckDBPyRelation.meta ()</code></pre>
+</blockquote>
+<hr>
+<p><a href="https://github.com/fredguth/fastduck/blob/main/fastduck/core.py#L185" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="duckdbpyrelation.model" class="level3">
+<h3 class="anchored" data-anchor-id="duckdbpyrelation.model">DuckDBPyRelation.model</h3>
+<blockquote class="blockquote">
+<pre><code> DuckDBPyRelation.model ()</code></pre>
+</blockquote>
+<hr>
+<p><a href="https://github.com/fredguth/fastduck/blob/main/fastduck/core.py#L182" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="duckdbpyrelation.cls" class="level3">
+<h3 class="anchored" data-anchor-id="duckdbpyrelation.cls">DuckDBPyRelation.cls</h3>
+<blockquote class="blockquote">
+<pre><code> DuckDBPyRelation.cls ()</code></pre>
+</blockquote>
+<hr>
+<p><a href="https://github.com/fredguth/fastduck/blob/main/fastduck/core.py#L180" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="create_prop" class="level3">
+<h3 class="anchored" data-anchor-id="create_prop">create_prop</h3>
+<blockquote class="blockquote">
+<pre><code> create_prop (c, name, f)</code></pre>
+</blockquote>
+<hr>
+<p><a href="https://github.com/fredguth/fastduck/blob/main/fastduck/core.py#L168" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="create_patch_property" class="level3">
+<h3 class="anchored" data-anchor-id="create_patch_property">create_patch_property</h3>
+<blockquote class="blockquote">
+<pre><code> create_patch_property (name)</code></pre>
+</blockquote>
+<hr>
+<p><a href="https://github.com/fredguth/fastduck/blob/main/fastduck/core.py#L166" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="custom_dir" class="level3">
+<h3 class="anchored" data-anchor-id="custom_dir">custom_dir</h3>
+<blockquote class="blockquote">
+<pre><code> custom_dir (c, add)</code></pre>
+</blockquote>
+<hr>
+<p><a href="https://github.com/fredguth/fastduck/blob/main/fastduck/core.py#L217" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="duckdbpyrelation.c" class="level3">
+<h3 class="anchored" data-anchor-id="duckdbpyrelation.c">DuckDBPyRelation.c</h3>
+<blockquote class="blockquote">
+<pre><code> DuckDBPyRelation.c ()</code></pre>
+</blockquote>
+<p>Column autocomplete</p>
+<div id="cell-49" class="cell" data-execution_count="22">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>db</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="22">
+<pre><code>&lt;duckdb.duckdb.DuckDBPyConnection at 0x16b97fd70&gt;</code></pre>
+</div>
+</div>
+</section>
+<section id="autocomplete" class="level3">
+<h3 class="anchored" data-anchor-id="autocomplete">Autocomplete</h3>
+<p>We want an easy access to table information.</p>
+<p>like db<code>.tables</code> should work similar to the <code>.table</code> cli command.</p>
+<hr>
+<p><a href="https://github.com/fredguth/fastduck/blob/main/fastduck/core.py#L269" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="duckdbpyconnection.shh" class="level3">
+<h3 class="anchored" data-anchor-id="duckdbpyconnection.shh">DuckDBPyConnection.shh</h3>
+<blockquote class="blockquote">
+<pre><code> DuckDBPyConnection.shh ()</code></pre>
+</blockquote>
+<hr>
+<p><a href="https://github.com/fredguth/fastduck/blob/main/fastduck/core.py#L265" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="duckdbpyconnection.fns" class="level3">
+<h3 class="anchored" data-anchor-id="duckdbpyconnection.fns">DuckDBPyConnection.fns</h3>
+<blockquote class="blockquote">
+<pre><code> DuckDBPyConnection.fns ()</code></pre>
+</blockquote>
+<hr>
+<p><a href="https://github.com/fredguth/fastduck/blob/main/fastduck/core.py#L261" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="duckdbpyconnection.v" class="level3">
+<h3 class="anchored" data-anchor-id="duckdbpyconnection.v">DuckDBPyConnection.v</h3>
+<blockquote class="blockquote">
+<pre><code> DuckDBPyConnection.v ()</code></pre>
+</blockquote>
+<p>Autocomplete functonality for views</p>
+<hr>
+<p><a href="https://github.com/fredguth/fastduck/blob/main/fastduck/core.py#L257" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="duckdbpyconnection.t" class="level3">
+<h3 class="anchored" data-anchor-id="duckdbpyconnection.t">DuckDBPyConnection.t</h3>
+<blockquote class="blockquote">
+<pre><code> DuckDBPyConnection.t ()</code></pre>
+</blockquote>
+<p>Autocomplete functonality for tables</p>
+<hr>
+<p><a href="https://github.com/fredguth/fastduck/blob/main/fastduck/core.py#L253" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="duckdbpyconnection.s" class="level3">
+<h3 class="anchored" data-anchor-id="duckdbpyconnection.s">DuckDBPyConnection.s</h3>
+<blockquote class="blockquote">
+<pre><code> DuckDBPyConnection.s ()</code></pre>
+</blockquote>
+<p>Autocomplete functonality for schemas</p>
+<hr>
+<p><a href="https://github.com/fredguth/fastduck/blob/main/fastduck/core.py#L247" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="duckdbpyconnection.get_schema" class="level3">
+<h3 class="anchored" data-anchor-id="duckdbpyconnection.get_schema">DuckDBPyConnection.get_schema</h3>
+<blockquote class="blockquote">
+<pre><code> DuckDBPyConnection.get_schema (catalog_schema:str)</code></pre>
+</blockquote>
+<hr>
+<p><a href="https://github.com/fredguth/fastduck/blob/main/fastduck/core.py#L239" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="duckdbpyconnection.use" class="level3">
+<h3 class="anchored" data-anchor-id="duckdbpyconnection.use">DuckDBPyConnection.use</h3>
+<blockquote class="blockquote">
+<pre><code> DuckDBPyConnection.use (catalog_schema:str=None, catalog:str=None,
+                         schema=None)</code></pre>
+</blockquote>
+<hr>
+<p><a href="https://github.com/fredguth/fastduck/blob/main/fastduck/core.py#L223" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="identity" class="level3">
+<h3 class="anchored" data-anchor-id="identity">identity</h3>
+<blockquote class="blockquote">
+<pre><code> identity (x)</code></pre>
+</blockquote>
+<hr>
+<p><a href="https://github.com/fredguth/fastduck/blob/main/fastduck/core.py#L222" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="noop" class="level3">
+<h3 class="anchored" data-anchor-id="noop">noop</h3>
+<blockquote class="blockquote">
+<pre><code> noop (*args, **kwargs)</code></pre>
+</blockquote>
+<p>:::</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="images/autocomplete.png" class="lightbox" data-glightbox="description: .lightbox-desc-1" data-gallery="quarto-lightbox-gallery-1" title="Autocomplete in Jupyter"><img src="images/autocomplete.png" class="img-fluid figure-img" alt="Autocomplete in Jupyter"></a></p>
+<figcaption>Autocomplete in Jupyter</figcaption>
+</figure>
+</div>
+<p>:::</p>
+<div id="cell-61" class="cell" data-execution_count="24">
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> db.t.Album.c[<span class="st">'AlbumId'</span>, <span class="st">'Title'</span>].limit(<span class="dv">4</span>)</span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>a</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="24">
+<pre><code>┌─────────┬───────────────────────────────────────┐
+│ AlbumId │                 Title                 │
+│  int32  │                varchar                │
+├─────────┼───────────────────────────────────────┤
+│       1 │ For Those About To Rock We Salute You │
+│       2 │ Balls to the Wall                     │
+│       3 │ Restless and Wild                     │
+│       4 │ Let There Be Rock                     │
+└─────────┴───────────────────────────────────────┘</code></pre>
+</div>
+</div>
+<p>Let’s also improve the representation of <code>Relations</code>.</p>
+<div id="cell-63" class="cell" data-execution_count="25">
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>db.s.chinook_main.t.Album</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="25">
+<pre><code>┌─────────┬─────────────────────────────────────────────────────────────────────┬──────────┐
+│ AlbumId │                                Title                                │ ArtistId │
+│  int32  │                               varchar                               │  int32   │
+├─────────┼─────────────────────────────────────────────────────────────────────┼──────────┤
+│       1 │ For Those About To Rock We Salute You                               │        1 │
+│       2 │ Balls to the Wall                                                   │        2 │
+│       3 │ Restless and Wild                                                   │        2 │
+│       4 │ Let There Be Rock                                                   │        1 │
+│       5 │ Big Ones                                                            │        3 │
+│       6 │ Jagged Little Pill                                                  │        4 │
+│       7 │ Facelift                                                            │        5 │
+│       8 │ Warner 25 Anos                                                      │        6 │
+│       9 │ Plays Metallica By Four Cellos                                      │        7 │
+│      10 │ Audioslave                                                          │        8 │
+│       · │     ·                                                               │        · │
+│       · │     ·                                                               │        · │
+│       · │     ·                                                               │        · │
+│     338 │ Nielsen: The Six Symphonies                                         │      267 │
+│     339 │ Great Recordings of the Century: Paganini's 24 Caprices             │      268 │
+│     340 │ Liszt - 12 Études D'Execution Transcendante                         │      269 │
+│     341 │ Great Recordings of the Century - Shubert: Schwanengesang, 4 Lieder │      270 │
+│     342 │ Locatelli: Concertos for Violin, Strings and Continuo, Vol. 3       │      271 │
+│     343 │ Respighi:Pines of Rome                                              │      226 │
+│     344 │ Schubert: The Late String Quartets &amp; String Quintet (3 CD's)        │      272 │
+│     345 │ Monteverdi: L'Orfeo                                                 │      273 │
+│     346 │ Mozart: Chamber Music                                               │      274 │
+│     347 │ Koyaanisqatsi (Soundtrack from the Motion Picture)                  │      275 │
+├─────────┴─────────────────────────────────────────────────────────────────────┴──────────┤
+│ 347 rows (20 shown)                                                            3 columns │
+└──────────────────────────────────────────────────────────────────────────────────────────┘</code></pre>
+</div>
+</div>
+<div id="cell-64" class="cell" data-execution_count="26">
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>DuckDBPyRelation._repr_markdown_??</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Object `DuckDBPyRelation._repr_markdown_` not found.</code></pre>
+</div>
+</div>
+<div id="cell-65" class="cell" data-execution_count="27">
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(a.df().to_markdown(index<span class="op">=</span><span class="va">False</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>|   AlbumId | Title                                 |
+|----------:|:--------------------------------------|
+|         1 | For Those About To Rock We Salute You |
+|         2 | Balls to the Wall                     |
+|         3 | Restless and Wild                     |
+|         4 | Let There Be Rock                     |</code></pre>
+</div>
+</div>
+<div id="cell-66" class="cell" data-execution_count="29">
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>db.tables.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>┌─────────┬─────────┬───────────────┬────────────┬─────────────┐
+│ catalog │ schema  │     name      │    type    │   comment   │
+│ varchar │ varchar │    varchar    │  varchar   │   varchar   │
+├─────────┼─────────┼───────────────┼────────────┼─────────────┤
+│ chinook │ main    │ Album         │ BASE TABLE │ Album table │
+│ chinook │ main    │ Artist        │ BASE TABLE │ NULL        │
+│ chinook │ main    │ Customer      │ BASE TABLE │ NULL        │
+│ chinook │ main    │ Employee      │ BASE TABLE │ NULL        │
+│ chinook │ main    │ Genre         │ BASE TABLE │ NULL        │
+│ chinook │ main    │ Invoice       │ BASE TABLE │ NULL        │
+│ chinook │ main    │ InvoiceLine   │ BASE TABLE │ NULL        │
+│ chinook │ main    │ MediaType     │ BASE TABLE │ NULL        │
+│ chinook │ main    │ Playlist      │ BASE TABLE │ NULL        │
+│ chinook │ main    │ PlaylistTrack │ BASE TABLE │ NULL        │
+│ chinook │ main    │ Track         │ BASE TABLE │ NULL        │
+│ chinook │ main    │ todos         │ BASE TABLE │ NULL        │
+│ chinook │ main    │ a_view        │ VIEW       │ Just a view │
+│ chinook │ main    │ temp_view     │ VIEW       │ NULL        │
+├─────────┴─────────┴───────────────┴────────────┴─────────────┤
+│ 14 rows                                            5 columns │
+└──────────────────────────────────────────────────────────────┘
+</code></pre>
+</div>
+</div>
+<div id="cell-67" class="cell" data-execution_count="30">
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>db.v.a_view</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="30">
+<div>
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">TrackId</th>
+<th data-quarto-table-cell-role="th">Name</th>
+<th data-quarto-table-cell-role="th">AlbumId</th>
+<th data-quarto-table-cell-role="th">MediaTypeId</th>
+<th data-quarto-table-cell-role="th">GenreId</th>
+<th data-quarto-table-cell-role="th">Composer</th>
+<th data-quarto-table-cell-role="th">Milliseconds</th>
+<th data-quarto-table-cell-role="th">Bytes</th>
+<th data-quarto-table-cell-role="th">UnitPrice</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>For Those About To Rock (We Salute You)</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>Angus Young, Malcolm Young, Brian Johnson</td>
+<td>343719</td>
+<td>11170334</td>
+<td>0.98</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Balls to the Wall</td>
+<td>2</td>
+<td>2</td>
+<td>1</td>
+<td>None</td>
+<td>342562</td>
+<td>5510424</td>
+<td>0.98</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>Fast As a Shark</td>
+<td>3</td>
+<td>2</td>
+<td>1</td>
+<td>F. Baltes, S. Kaufman, U. Dirkscneider &amp; W. Hoffman</td>
+<td>230619</td>
+<td>3990994</td>
+<td>0.98</td>
+</tr>
+<tr class="even">
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr class="odd">
+<td>3502</td>
+<td>Quintet for Horn, Violin, 2 Violas, and Cello in E Flat Major, K. 407/386c: III. Allegro</td>
+<td>346</td>
+<td>2</td>
+<td>24</td>
+<td>Wolfgang Amadeus Mozart</td>
+<td>221331</td>
+<td>3665114</td>
+<td>0.98</td>
+</tr>
+<tr class="even">
+<td>3503</td>
+<td>Koyaanisqatsi</td>
+<td>347</td>
+<td>2</td>
+<td>10</td>
+<td>Philip Glass</td>
+<td>206005</td>
+<td>3305164</td>
+<td>0.98</td>
+</tr>
+</tbody>
+</table>
+<p>3503 rows x  9 cols &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DuckDBPyRelation VIEW chinook.main.a_view </p><p><i>Just a view</i></p>
+
+</div>
+</div>
+</div>
+<div id="cell-68" class="cell" data-execution_count="31">
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>db.sql(<span class="st">'select * from Album'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="31">
+<div>
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">AlbumId</th>
+<th data-quarto-table-cell-role="th">Title</th>
+<th data-quarto-table-cell-role="th">ArtistId</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>For Those About To Rock We Salute You</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Balls to the Wall</td>
+<td>2</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>Restless and Wild</td>
+<td>2</td>
+</tr>
+<tr class="even">
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr class="odd">
+<td>346</td>
+<td>Mozart: Chamber Music</td>
+<td>274</td>
+</tr>
+<tr class="even">
+<td>347</td>
+<td>Koyaanisqatsi (Soundtrack from the Motion Picture)</td>
+<td>275</td>
+</tr>
+</tbody>
+</table>
+<p>347 rows x  3 cols &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DuckDBPyRelation   </p>
+</div>
+</div>
+</div>
+<div id="cell-69" class="cell" data-execution_count="32">
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>db.t.Genre</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="32">
+<div>
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">GenreId</th>
+<th data-quarto-table-cell-role="th">Name</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>Rock</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Jazz</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>Metal</td>
+</tr>
+<tr class="even">
+<td>...</td>
+<td>...</td>
+</tr>
+<tr class="odd">
+<td>24</td>
+<td>Classical</td>
+</tr>
+<tr class="even">
+<td>25</td>
+<td>Opera</td>
+</tr>
+</tbody>
+</table>
+<p>25 rows x  2 cols &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DuckDBPyRelation BASE_TABLE chinook.main.Genre </p>
+</div>
+</div>
+</div>
+<div id="cell-70" class="cell" data-execution_count="33">
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>a</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="33">
+<div>
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">AlbumId</th>
+<th data-quarto-table-cell-role="th">Title</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>For Those About To Rock We Salute You</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Balls to the Wall</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>Restless and Wild</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>Let There Be Rock</td>
+</tr>
+</tbody>
+</table>
+<p>4 rows x  2 cols &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DuckDBPyRelation  chinook.main.Album </p>
+</div>
+</div>
+</div>
+<section id="replacement-scans" class="level4">
+<h4 class="anchored" data-anchor-id="replacement-scans">Replacement Scans</h4>
+<p>You may be asking yourself why I am patching <code>DuckDBPyRelation</code> and <code>DuckDBPyConnection</code> instead of subclassing them. The problem is that these classes do not allow subclassing. They do not implement <code>__init__</code>.</p>
+<p>We could have create our own classes like <code>Database</code> and <code>Table</code> and just wrap DuckDBPy objects. But then we would loose a very nice feature of the PyRelation objects…..</p>
+<p><em>replacement scans</em>.</p>
+<div id="cell-73" class="cell" data-execution_count="34">
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> db.t.Album</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-74" class="cell" data-execution_count="35">
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>db.sql(<span class="st">"select * from a"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="35">
+<div>
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">AlbumId</th>
+<th data-quarto-table-cell-role="th">Title</th>
+<th data-quarto-table-cell-role="th">ArtistId</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>For Those About To Rock We Salute You</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Balls to the Wall</td>
+<td>2</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>Restless and Wild</td>
+<td>2</td>
+</tr>
+<tr class="even">
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr class="odd">
+<td>346</td>
+<td>Mozart: Chamber Music</td>
+<td>274</td>
+</tr>
+<tr class="even">
+<td>347</td>
+<td>Koyaanisqatsi (Soundtrack from the Motion Picture)</td>
+<td>275</td>
+</tr>
+</tbody>
+</table>
+<p>347 rows x  3 cols &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DuckDBPyRelation   </p>
+</div>
+</div>
+</div>
+<p>I did not had to use a f-string and pass the variable. DuckDBPy objects (as well as Pandas and Polars Dataframes, Arrow tables, and Datasets) are replaced in the query automagically.</p>
+<div id="cell-76" class="cell" data-execution_count="36">
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a>db.sql(<span class="ss">f"select * from </span><span class="sc">{</span>a<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="36">
+<div>
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">AlbumId</th>
+<th data-quarto-table-cell-role="th">Title</th>
+<th data-quarto-table-cell-role="th">ArtistId</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>For Those About To Rock We Salute You</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Balls to the Wall</td>
+<td>2</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>Restless and Wild</td>
+<td>2</td>
+</tr>
+<tr class="even">
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr class="odd">
+<td>346</td>
+<td>Mozart: Chamber Music</td>
+<td>274</td>
+</tr>
+<tr class="even">
+<td>347</td>
+<td>Koyaanisqatsi (Soundtrack from the Motion Picture)</td>
+<td>275</td>
+</tr>
+</tbody>
+</table>
+<p>347 rows x  3 cols &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DuckDBPyRelation   </p>
+</div>
+</div>
+</div>
+<div id="cell-77" class="cell" data-execution_count="37">
+<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="bu">str</span>(a)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="37">
+<pre><code>'chinook.main.Album'</code></pre>
+</div>
+</div>
+<div id="cell-78" class="cell" data-execution_count="38">
+<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a>db.tables</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="38">
+<div>
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">catalog</th>
+<th data-quarto-table-cell-role="th">schema</th>
+<th data-quarto-table-cell-role="th">name</th>
+<th data-quarto-table-cell-role="th">type</th>
+<th data-quarto-table-cell-role="th">comment</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>chinook</td>
+<td>main</td>
+<td>Album</td>
+<td>BASE TABLE</td>
+<td>Album table</td>
+</tr>
+<tr class="even">
+<td>chinook</td>
+<td>main</td>
+<td>Artist</td>
+<td>BASE TABLE</td>
+<td>None</td>
+</tr>
+<tr class="odd">
+<td>chinook</td>
+<td>main</td>
+<td>Customer</td>
+<td>BASE TABLE</td>
+<td>None</td>
+</tr>
+<tr class="even">
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr class="odd">
+<td>chinook</td>
+<td>main</td>
+<td>a_view</td>
+<td>VIEW</td>
+<td>Just a view</td>
+</tr>
+<tr class="even">
+<td>chinook</td>
+<td>main</td>
+<td>temp_view</td>
+<td>VIEW</td>
+<td>None</td>
+</tr>
+</tbody>
+</table>
+<p>14 rows x  5 cols &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DuckDBPyRelation   </p>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="database-management" class="level2">
+<h2 class="anchored" data-anchor-id="database-management">Database management</h2>
+<section id="attach-detach-and-use" class="level4">
+<h4 class="anchored" data-anchor-id="attach-detach-and-use">Attach, Detach and Use</h4>
+<hr>
+<p><a href="https://github.com/fredguth/fastduck/blob/main/fastduck/core.py#L319" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="duckdbpyconnection.attach" class="level3">
+<h3 class="anchored" data-anchor-id="duckdbpyconnection.attach">DuckDBPyConnection.attach</h3>
+<hr>
+<p><a href="https://github.com/fredguth/fastduck/blob/main/fastduck/core.py#L316" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="invalidpatherror" class="level3">
+<h3 class="anchored" data-anchor-id="invalidpatherror">InvalidPathError</h3>
+<p>Common base class for all non-exit exceptions.</p>
+<hr>
+<p><a href="https://github.com/fredguth/fastduck/blob/main/fastduck/core.py#L315" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="remotesqliteerror" class="level3">
+<h3 class="anchored" data-anchor-id="remotesqliteerror">RemoteSqliteError</h3>
+<p>Common base class for all non-exit exceptions.</p>
+<div id="cell-84" class="cell" data-execution_count="40">
+<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="at">@patch</span></span>
+<span id="cb79-2"><a href="#cb79-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> detach(<span class="va">self</span>: DuckDBPyConnection, catalog_name) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb79-3"><a href="#cb79-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> catalog_name <span class="kw">in</span> <span class="va">self</span>.schemas.to_list(): <span class="va">self</span>.sql(<span class="ss">f"DETACH </span><span class="sc">{</span>catalog_name<span class="sc">.</span>split(<span class="st">'_'</span>)[<span class="dv">0</span>]<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-85" class="cell" data-execution_count="41">
+<div class="sourceCode cell-code" id="cb80"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a>db.attach(<span class="st">'../data/chinook.sqlite'</span>, catalog_name<span class="op">=</span><span class="st">'lite'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-86" class="cell" data-execution_count="42">
+<div class="sourceCode cell-code" id="cb81"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a>db.schemas</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="42">
+<div>
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">catalog_schema</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>lite_main</td>
+</tr>
+<tr class="even">
+<td>chinook_main</td>
+</tr>
+</tbody>
+</table>
+<p>2 rows x  1 cols &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DuckDBPyRelation   </p>
+</div>
+</div>
+</div>
+<div id="cell-87" class="cell" data-execution_count="43">
+<div class="sourceCode cell-code" id="cb82"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a>db.detach(<span class="st">'lite_main'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="drop" class="level4">
+<h4 class="anchored" data-anchor-id="drop">Drop</h4>
+<hr>
+<p><a href="https://github.com/fredguth/fastduck/blob/main/fastduck/core.py#L345" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+</section>
+<section id="duckdbpyconnection.drop" class="level3">
+<h3 class="anchored" data-anchor-id="duckdbpyconnection.drop">DuckDBPyConnection.drop</h3>
+<blockquote class="blockquote">
+<pre><code> DuckDBPyConnection.drop (pattern:str)</code></pre>
+</blockquote>
+<p>Drop a table or view</p>
+<hr>
+<p><a href="https://github.com/fredguth/fastduck/blob/main/fastduck/core.py#L335" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="find_matches" class="level3">
+<h3 class="anchored" data-anchor-id="find_matches">find_matches</h3>
+<blockquote class="blockquote">
+<pre><code> find_matches (pattern:str, items:List[str])</code></pre>
+</blockquote>
+<div id="cell-91" class="cell" data-execution_count="45">
+<div class="sourceCode cell-code" id="cb85"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a>db.tables.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>┌─────────┬─────────┬───────────────┬────────────┬─────────────┐
+│ catalog │ schema  │     name      │    type    │   comment   │
+│ varchar │ varchar │    varchar    │  varchar   │   varchar   │
+├─────────┼─────────┼───────────────┼────────────┼─────────────┤
+│ chinook │ main    │ Album         │ BASE TABLE │ Album table │
+│ chinook │ main    │ Artist        │ BASE TABLE │ NULL        │
+│ chinook │ main    │ Customer      │ BASE TABLE │ NULL        │
+│ chinook │ main    │ Employee      │ BASE TABLE │ NULL        │
+│ chinook │ main    │ Genre         │ BASE TABLE │ NULL        │
+│ chinook │ main    │ Invoice       │ BASE TABLE │ NULL        │
+│ chinook │ main    │ InvoiceLine   │ BASE TABLE │ NULL        │
+│ chinook │ main    │ MediaType     │ BASE TABLE │ NULL        │
+│ chinook │ main    │ Playlist      │ BASE TABLE │ NULL        │
+│ chinook │ main    │ PlaylistTrack │ BASE TABLE │ NULL        │
+│ chinook │ main    │ Track         │ BASE TABLE │ NULL        │
+│ chinook │ main    │ todos         │ BASE TABLE │ NULL        │
+│ chinook │ main    │ a_view        │ VIEW       │ Just a view │
+│ chinook │ main    │ temp_view     │ VIEW       │ NULL        │
+├─────────┴─────────┴───────────────┴────────────┴─────────────┤
+│ 14 rows                                            5 columns │
+└──────────────────────────────────────────────────────────────┘
+</code></pre>
+</div>
+</div>
+<div id="cell-92" class="cell" data-execution_count="46">
+<div class="sourceCode cell-code" id="cb87"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a>db.drop(<span class="st">'non_existent'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="create-table-or-view" class="level4">
+<h4 class="anchored" data-anchor-id="create-table-or-view">Create Table or View</h4>
+<hr>
+<p><a href="https://github.com/fredguth/fastduck/blob/main/fastduck/core.py#L385" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+</section>
+<section id="duckdbpyconnection.create_view" class="level3">
+<h3 class="anchored" data-anchor-id="duckdbpyconnection.create_view">DuckDBPyConnection.create_view</h3>
+<blockquote class="blockquote">
+<pre><code> DuckDBPyConnection.create_view (fileglob:str,
+                                 view_name:Optional[str]=None, filetype:Op
+                                 tional[Literal['csv','xlsx','json','parqu
+                                 et','sqlite']]=None, replace:bool=False,
+                                 as_name:Optional[str]=None, *args,
+                                 **kwargs)</code></pre>
+</blockquote>
+<p>Create a view from a file</p>
+<table class="table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 25%">
+<col style="width: 34%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>fileglob</td>
+<td>str</td>
+<td></td>
+<td>file path or glob</td>
+</tr>
+<tr class="even">
+<td>view_name</td>
+<td>Optional[str]</td>
+<td>None</td>
+<td>view name</td>
+</tr>
+<tr class="odd">
+<td>filetype</td>
+<td>Optional[Literal[‘csv’, ‘xlsx’, ‘json’, ‘parquet’, ‘sqlite’]]</td>
+<td>None</td>
+<td>file type</td>
+</tr>
+<tr class="even">
+<td>replace</td>
+<td>bool</td>
+<td>False</td>
+<td>replace existing view</td>
+</tr>
+<tr class="odd">
+<td>as_name</td>
+<td>Optional[str]</td>
+<td>None</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>args</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>kwargs</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p><a href="https://github.com/fredguth/fastduck/blob/main/fastduck/core.py#L373" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="duckdbpyconnection.create_table" class="level3">
+<h3 class="anchored" data-anchor-id="duckdbpyconnection.create_table">DuckDBPyConnection.create_table</h3>
+<blockquote class="blockquote">
+<pre><code> DuckDBPyConnection.create_table (fileglob:str,
+                                  table_name:Optional[str]=None, filetype:
+                                  Optional[Literal['csv','xlsx','json','pa
+                                  rquet','sqlite']]=None,
+                                  as_name:Optional[str]=None,
+                                  replace:bool=False, *args, **kwargs)</code></pre>
+</blockquote>
+<p>Create a table from a file</p>
+<table class="table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 25%">
+<col style="width: 34%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>fileglob</td>
+<td>str</td>
+<td></td>
+<td>file path or glob</td>
+</tr>
+<tr class="even">
+<td>table_name</td>
+<td>Optional[str]</td>
+<td>None</td>
+<td>table name</td>
+</tr>
+<tr class="odd">
+<td>filetype</td>
+<td>Optional[Literal[‘csv’, ‘xlsx’, ‘json’, ‘parquet’, ‘sqlite’]]</td>
+<td>None</td>
+<td>file type</td>
+</tr>
+<tr class="even">
+<td>as_name</td>
+<td>Optional[str]</td>
+<td>None</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>replace</td>
+<td>bool</td>
+<td>False</td>
+<td>replace existing table</td>
+</tr>
+<tr class="even">
+<td>args</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>kwargs</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<div id="cell-96" class="cell" data-execution_count="48">
+<div class="sourceCode cell-code" id="cb90"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a>db.create_table(<span class="st">'../data/username.latin1.csv'</span>, <span class="st">'latin'</span>, replace<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb90-2"><a href="#cb90-2" aria-hidden="true" tabindex="-1"></a>db.tables</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="48">
+<div>
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">catalog</th>
+<th data-quarto-table-cell-role="th">schema</th>
+<th data-quarto-table-cell-role="th">name</th>
+<th data-quarto-table-cell-role="th">type</th>
+<th data-quarto-table-cell-role="th">comment</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>chinook</td>
+<td>main</td>
+<td>Album</td>
+<td>BASE TABLE</td>
+<td>Album table</td>
+</tr>
+<tr class="even">
+<td>chinook</td>
+<td>main</td>
+<td>Artist</td>
+<td>BASE TABLE</td>
+<td>None</td>
+</tr>
+<tr class="odd">
+<td>chinook</td>
+<td>main</td>
+<td>Customer</td>
+<td>BASE TABLE</td>
+<td>None</td>
+</tr>
+<tr class="even">
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr class="odd">
+<td>chinook</td>
+<td>main</td>
+<td>a_view</td>
+<td>VIEW</td>
+<td>Just a view</td>
+</tr>
+<tr class="even">
+<td>chinook</td>
+<td>main</td>
+<td>temp_view</td>
+<td>VIEW</td>
+<td>None</td>
+</tr>
+</tbody>
+</table>
+<p>15 rows x  5 cols &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DuckDBPyRelation   </p>
+</div>
+</div>
+</div>
+<div id="cell-97" class="cell" data-execution_count="49">
+<div class="sourceCode cell-code" id="cb91"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a>db.create_view(<span class="st">'../data/username.latin1.csv'</span>, <span class="st">'latin1view'</span>, replace<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-98" class="cell" data-execution_count="50">
+<div class="sourceCode cell-code" id="cb92"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a>db.tables.<span class="bu">filter</span>(<span class="ss">f"name like '%latin%'"</span>)</span>
+<span id="cb92-2"><a href="#cb92-2" aria-hidden="true" tabindex="-1"></a><span class="co">#  db.sql("select distinct database_name, schema_name, table_name, column_name from duckdb_columns()")</span></span>
+<span id="cb92-3"><a href="#cb92-3" aria-hidden="true" tabindex="-1"></a><span class="co"># db.sql("attach database '../data/chinook.sqlite' as sqlite")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="50">
+<div>
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">catalog</th>
+<th data-quarto-table-cell-role="th">schema</th>
+<th data-quarto-table-cell-role="th">name</th>
+<th data-quarto-table-cell-role="th">type</th>
+<th data-quarto-table-cell-role="th">comment</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>chinook</td>
+<td>main</td>
+<td>latin</td>
+<td>BASE TABLE</td>
+<td>None</td>
+</tr>
+<tr class="even">
+<td>chinook</td>
+<td>main</td>
+<td>latin1view</td>
+<td>BASE TABLE</td>
+<td>None</td>
+</tr>
+</tbody>
+</table>
+<p>2 rows x  5 cols &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DuckDBPyRelation   </p>
+</div>
+</div>
+</div>
+<div id="cell-99" class="cell" data-execution_count="51">
+<div class="sourceCode cell-code" id="cb93"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a>db.drop(<span class="st">'latin1view'</span>)</span>
+<span id="cb93-2"><a href="#cb93-2" aria-hidden="true" tabindex="-1"></a>db.drop(<span class="st">'latin'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-100" class="cell" data-execution_count="52">
+<div class="sourceCode cell-code" id="cb94"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a><span class="co"># from fastcore.test import test_fail</span></span>
+<span id="cb94-2"><a href="#cb94-2" aria-hidden="true" tabindex="-1"></a><span class="co"># test_fail(db.drop, 'banana') # fix error in nbdev_prepare</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-101" class="cell" data-execution_count="53">
+<div class="sourceCode cell-code" id="cb95"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb95-1"><a href="#cb95-1" aria-hidden="true" tabindex="-1"></a>db.create_table(<span class="st">'https://jsonplaceholder.typicode.com/todos/'</span>, <span class="st">'todos'</span>, filetype<span class="op">=</span><span class="st">'json'</span>, replace<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-102" class="cell" data-execution_count="54">
+<div class="sourceCode cell-code" id="cb96"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a>db.t.todos.limit(<span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="54">
+<div>
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">userId</th>
+<th data-quarto-table-cell-role="th">id</th>
+<th data-quarto-table-cell-role="th">title</th>
+<th data-quarto-table-cell-role="th">completed</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>1</td>
+<td>delectus aut autem</td>
+<td>False</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>2</td>
+<td>quis ut nam facilis et officia qui</td>
+<td>False</td>
+</tr>
+<tr class="odd">
+<td>1</td>
+<td>3</td>
+<td>fugiat veniam minus</td>
+<td>False</td>
+</tr>
+<tr class="even">
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr class="odd">
+<td>1</td>
+<td>9</td>
+<td>molestiae perspiciatis ipsa</td>
+<td>False</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>10</td>
+<td>illo est ratione doloremque quia maiores aut</td>
+<td>True</td>
+</tr>
+</tbody>
+</table>
+<p>10 rows x  4 cols &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DuckDBPyRelation  chinook.main.todos </p>
+</div>
+</div>
+</div>
+<div id="cell-103" class="cell" data-execution_count="55">
+<div class="sourceCode cell-code" id="cb97"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb97-1"><a href="#cb97-1" aria-hidden="true" tabindex="-1"></a><span class="co"># db.create_table('https://huggingface.co/datasets/ibm/duorc/resolve/refs%2Fconvert%2Fparquet/ParaphraseRC/test/0000.parquet', 'hf_movies')</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-104" class="cell" data-execution_count="56">
+<div class="sourceCode cell-code" id="cb98"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a><span class="co"># db.t.hf_movies.limit(2)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-105" class="cell" data-execution_count="57">
+<div class="sourceCode cell-code" id="cb99"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb99-1"><a href="#cb99-1" aria-hidden="true" tabindex="-1"></a><span class="co"># db.drop('hf_movies')</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-106" class="cell" data-execution_count="58">
+<div class="sourceCode cell-code" id="cb100"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a>db.create_table(<span class="st">'../data/example.xlsx'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-107" class="cell" data-execution_count="59">
+<div class="sourceCode cell-code" id="cb101"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb101-1"><a href="#cb101-1" aria-hidden="true" tabindex="-1"></a>sheet <span class="op">=</span> db.t.example</span>
+<span id="cb101-2"><a href="#cb101-2" aria-hidden="true" tabindex="-1"></a>sheet</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="59">
+<div>
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">COLUMN1</th>
+<th data-quarto-table-cell-role="th">COLUMN WITH SPACE</th>
+<th data-quarto-table-cell-role="th">Cólumn name</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>1.3</td>
+<td>a</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>1.3</td>
+<td>bn</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>1.3</td>
+<td>v</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>1.3</td>
+<td>sgf</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>1.3</td>
+<td>asd</td>
+</tr>
+</tbody>
+</table>
+<p>5 rows x  3 cols &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DuckDBPyRelation BASE_TABLE chinook.main.example </p>
+</div>
+</div>
+</div>
+<div id="cell-108" class="cell" data-execution_count="60">
+<div class="sourceCode cell-code" id="cb102"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a>db.drop(<span class="st">'example'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-109" class="cell" data-execution_count="61">
+<div class="sourceCode cell-code" id="cb103"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb103-1"><a href="#cb103-1" aria-hidden="true" tabindex="-1"></a>db.create_table(<span class="st">'../data/chinook.sqlite'</span>, filetype<span class="op">=</span><span class="st">'sqlite'</span>, table_name<span class="op">=</span><span class="st">'Customer'</span>, as_name<span class="op">=</span><span class="st">'sqlite_Customer'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-110" class="cell" data-execution_count="62">
+<div class="sourceCode cell-code" id="cb104"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a>db.t.sqlite_Customer</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="62">
+<div>
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">CustomerId</th>
+<th data-quarto-table-cell-role="th">FirstName</th>
+<th data-quarto-table-cell-role="th">LastName</th>
+<th data-quarto-table-cell-role="th">Company</th>
+<th data-quarto-table-cell-role="th">Address</th>
+<th data-quarto-table-cell-role="th">City</th>
+<th data-quarto-table-cell-role="th">State</th>
+<th data-quarto-table-cell-role="th">Country</th>
+<th data-quarto-table-cell-role="th">PostalCode</th>
+<th data-quarto-table-cell-role="th">Phone</th>
+<th data-quarto-table-cell-role="th">Fax</th>
+<th data-quarto-table-cell-role="th">Email</th>
+<th data-quarto-table-cell-role="th">SupportRepId</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>Luís</td>
+<td>Gonçalves</td>
+<td>Embraer - Empresa Brasileira de Aeronáutica S.A.</td>
+<td>Av. Brigadeiro Faria Lima, 2170</td>
+<td>São José dos Campos</td>
+<td>SP</td>
+<td>Brazil</td>
+<td>12227-000</td>
+<td>+55 (12) 3923-5555</td>
+<td>+55 (12) 3923-5566</td>
+<td>luisg@embraer.com.br</td>
+<td>3</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Leonie</td>
+<td>Köhler</td>
+<td>None</td>
+<td>Theodor-Heuss-Straße 34</td>
+<td>Stuttgart</td>
+<td>None</td>
+<td>Germany</td>
+<td>70174</td>
+<td>+49 0711 2842222</td>
+<td>None</td>
+<td>leonekohler@surfeu.de</td>
+<td>5</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>François</td>
+<td>Tremblay</td>
+<td>None</td>
+<td>1498 rue Bélanger</td>
+<td>Montréal</td>
+<td>QC</td>
+<td>Canada</td>
+<td>H2G 1A7</td>
+<td>+1 (514) 721-4711</td>
+<td>None</td>
+<td>ftremblay@gmail.com</td>
+<td>3</td>
+</tr>
+<tr class="even">
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr class="odd">
+<td>58</td>
+<td>Manoj</td>
+<td>Pareek</td>
+<td>None</td>
+<td>12,Community Centre</td>
+<td>Delhi</td>
+<td>None</td>
+<td>India</td>
+<td>110017</td>
+<td>+91 0124 39883988</td>
+<td>None</td>
+<td>manoj.pareek@rediff.com</td>
+<td>3</td>
+</tr>
+<tr class="even">
+<td>59</td>
+<td>Puja</td>
+<td>Srivastava</td>
+<td>None</td>
+<td>3,Raj Bhavan Road</td>
+<td>Bangalore</td>
+<td>None</td>
+<td>India</td>
+<td>560001</td>
+<td>+91 080 22289999</td>
+<td>None</td>
+<td>puja_srivastava@yahoo.in</td>
+<td>3</td>
+</tr>
+</tbody>
+</table>
+<p>59 rows x  13 cols &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DuckDBPyRelation BASE_TABLE chinook.main.sqlite_Customer </p>
+</div>
+</div>
+</div>
+<div id="cell-111" class="cell" data-execution_count="63">
+<div class="sourceCode cell-code" id="cb105"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb105-1"><a href="#cb105-1" aria-hidden="true" tabindex="-1"></a>db.drop(<span class="st">'sqlite_Customer'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<hr>
+<p><a href="https://github.com/fredguth/fastduck/blob/main/fastduck/core.py#L399" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="duckdbpyconnection.import_from" class="level3">
+<h3 class="anchored" data-anchor-id="duckdbpyconnection.import_from">DuckDBPyConnection.import_from</h3>
+<blockquote class="blockquote">
+<pre><code> DuckDBPyConnection.import_from (filepath=None, pre='', suf='',
+                                 schema=None, replace=None)</code></pre>
+</blockquote>
+<div id="cell-113" class="cell" data-execution_count="65">
+<div class="sourceCode cell-code" id="cb107"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb107-1"><a href="#cb107-1" aria-hidden="true" tabindex="-1"></a>db.tables.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>┌─────────┬─────────┬───────────────┬────────────┬─────────────┐
+│ catalog │ schema  │     name      │    type    │   comment   │
+│ varchar │ varchar │    varchar    │  varchar   │   varchar   │
+├─────────┼─────────┼───────────────┼────────────┼─────────────┤
+│ chinook │ main    │ Album         │ BASE TABLE │ Album table │
+│ chinook │ main    │ Artist        │ BASE TABLE │ NULL        │
+│ chinook │ main    │ Customer      │ BASE TABLE │ NULL        │
+│ chinook │ main    │ Employee      │ BASE TABLE │ NULL        │
+│ chinook │ main    │ Genre         │ BASE TABLE │ NULL        │
+│ chinook │ main    │ Invoice       │ BASE TABLE │ NULL        │
+│ chinook │ main    │ InvoiceLine   │ BASE TABLE │ NULL        │
+│ chinook │ main    │ MediaType     │ BASE TABLE │ NULL        │
+│ chinook │ main    │ Playlist      │ BASE TABLE │ NULL        │
+│ chinook │ main    │ PlaylistTrack │ BASE TABLE │ NULL        │
+│ chinook │ main    │ Track         │ BASE TABLE │ NULL        │
+│ chinook │ main    │ todos         │ BASE TABLE │ NULL        │
+│ chinook │ main    │ a_view        │ VIEW       │ Just a view │
+│ chinook │ main    │ temp_view     │ VIEW       │ NULL        │
+├─────────┴─────────┴───────────────┴────────────┴─────────────┤
+│ 14 rows                                            5 columns │
+└──────────────────────────────────────────────────────────────┘
+</code></pre>
+</div>
+</div>
+<div id="cell-114" class="cell" data-execution_count="66">
+<div class="sourceCode cell-code" id="cb109"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb109-1"><a href="#cb109-1" aria-hidden="true" tabindex="-1"></a>db.import_from(<span class="st">'../data/chinook.sqlite'</span>, schema <span class="op">=</span> <span class="st">'cebola'</span>, replace<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-115" class="cell" data-execution_count="67">
+<div class="sourceCode cell-code" id="cb110"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb110-1"><a href="#cb110-1" aria-hidden="true" tabindex="-1"></a>db.tables.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>┌─────────┬─────────┬───────────────┬────────────┬─────────────┐
+│ catalog │ schema  │     name      │    type    │   comment   │
+│ varchar │ varchar │    varchar    │  varchar   │   varchar   │
+├─────────┼─────────┼───────────────┼────────────┼─────────────┤
+│ chinook │ main    │ Album         │ BASE TABLE │ Album table │
+│ chinook │ cebola  │ Album         │ BASE TABLE │ NULL        │
+│ chinook │ main    │ Artist        │ BASE TABLE │ NULL        │
+│ chinook │ cebola  │ Artist        │ BASE TABLE │ NULL        │
+│ chinook │ main    │ Customer      │ BASE TABLE │ NULL        │
+│ chinook │ cebola  │ Customer      │ BASE TABLE │ NULL        │
+│ chinook │ cebola  │ Employee      │ BASE TABLE │ NULL        │
+│ chinook │ main    │ Employee      │ BASE TABLE │ NULL        │
+│ chinook │ main    │ Genre         │ BASE TABLE │ NULL        │
+│ chinook │ cebola  │ Genre         │ BASE TABLE │ NULL        │
+│    ·    │  ·      │   ·           │     ·      │  ·          │
+│    ·    │  ·      │   ·           │     ·      │  ·          │
+│    ·    │  ·      │   ·           │     ·      │  ·          │
+│ chinook │ main    │ MediaType     │ BASE TABLE │ NULL        │
+│ chinook │ main    │ Playlist      │ BASE TABLE │ NULL        │
+│ chinook │ cebola  │ Playlist      │ BASE TABLE │ NULL        │
+│ chinook │ cebola  │ PlaylistTrack │ BASE TABLE │ NULL        │
+│ chinook │ main    │ PlaylistTrack │ BASE TABLE │ NULL        │
+│ chinook │ main    │ Track         │ BASE TABLE │ NULL        │
+│ chinook │ cebola  │ Track         │ BASE TABLE │ NULL        │
+│ chinook │ main    │ todos         │ BASE TABLE │ NULL        │
+│ chinook │ main    │ a_view        │ VIEW       │ Just a view │
+│ chinook │ main    │ temp_view     │ VIEW       │ NULL        │
+├─────────┴─────────┴───────────────┴────────────┴─────────────┤
+│ 25 rows (20 shown)                                 5 columns │
+└──────────────────────────────────────────────────────────────┘
+</code></pre>
+</div>
+</div>
+<div id="cell-116" class="cell" data-execution_count="68">
+<div class="sourceCode cell-code" id="cb112"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb112-1"><a href="#cb112-1" aria-hidden="true" tabindex="-1"></a>db.drop(<span class="st">'cebola.*'</span>)</span>
+<span id="cb112-2"><a href="#cb112-2" aria-hidden="true" tabindex="-1"></a>db.detach(<span class="st">'lite_main'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-117" class="cell" data-execution_count="69">
+<div class="sourceCode cell-code" id="cb113"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb113-1"><a href="#cb113-1" aria-hidden="true" tabindex="-1"></a>db.tables</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="69">
+<div>
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">catalog</th>
+<th data-quarto-table-cell-role="th">schema</th>
+<th data-quarto-table-cell-role="th">name</th>
+<th data-quarto-table-cell-role="th">type</th>
+<th data-quarto-table-cell-role="th">comment</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>chinook</td>
+<td>main</td>
+<td>Album</td>
+<td>BASE TABLE</td>
+<td>Album table</td>
+</tr>
+<tr class="even">
+<td>chinook</td>
+<td>main</td>
+<td>Artist</td>
+<td>BASE TABLE</td>
+<td>None</td>
+</tr>
+<tr class="odd">
+<td>chinook</td>
+<td>main</td>
+<td>Customer</td>
+<td>BASE TABLE</td>
+<td>None</td>
+</tr>
+<tr class="even">
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr class="odd">
+<td>chinook</td>
+<td>main</td>
+<td>a_view</td>
+<td>VIEW</td>
+<td>Just a view</td>
+</tr>
+<tr class="even">
+<td>chinook</td>
+<td>main</td>
+<td>temp_view</td>
+<td>VIEW</td>
+<td>None</td>
+</tr>
+</tbody>
+</table>
+<p>14 rows x  5 cols &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DuckDBPyRelation   </p>
+</div>
+</div>
+</div>
+
+
+<div class="hidden" aria-hidden="true">
+<span class="glightbox-desc lightbox-desc-1">Autocomplete in Jupyter</span>
+</div>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/fredguth/fastduck/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div></div></footer><script>var lightboxQuarto = GLightbox({"descPosition":"bottom","closeEffect":"zoom","openEffect":"zoom","selector":".lightbox","loop":false});
+window.onload = () => {
+  lightboxQuarto.on('slide_before_load', (data) => {
+    const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+    const href = trigger.getAttribute('href');
+    if (href !== null) {
+      const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+      if (imgEl !== null) {
+        const srcAttr = imgEl.getAttribute("src");
+        if (srcAttr && srcAttr.startsWith("data:")) {
+          slideConfig.href = srcAttr;
+        }
+      }
+    } 
+  });
+
+  lightboxQuarto.on('slide_after_load', (data) => {
+    const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+    if (window.Quarto?.typesetMath) {
+      window.Quarto.typesetMath(slideNode);
+    }
+  });
+
+};
+          </script>
+
+
+
+
+</body></html>
