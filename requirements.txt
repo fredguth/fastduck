@@ -1,7 +1,0 @@
-fastcore>=1.5.41
-duckdb
-graphviz
-numpy
-pandas
-ipykernel
-pyarrow

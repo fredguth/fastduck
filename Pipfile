@@ -1,0 +1,25 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+duckdb = "*"
+fastcore = "*"
+graphviz = "*"
+numpy = "*"
+pandas = "*"
+pathlib = "*"
+tabulate = "*"
+
+[dev-packages]
+setuptools = "*"
+nbdev = "*"
+jedi = "*"
+sql = "*"
+ipykernel = "*"
+ipython = "*"
+jupyter = "*"
+
+[requires]
+python_version = "3.12"

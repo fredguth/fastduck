@@ -12,7 +12,6 @@ from dataclasses import field, make_dataclass
 from fastcore.xtras import hl_md, dataclass_src
 from functools import wraps, partial
 from pathlib import Path
-from IPython.display import Markdown
 
 
 # %% auto 0
