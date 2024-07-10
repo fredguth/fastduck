@@ -88,7 +88,7 @@ dt['Artist', 'Album', 'Genre']
 It also provides auto-complete in Jupyter, IPython and nearly any other
 interactive Python environment:
 
-<img src="images/autocomplete.png" width="400"
+<img src="/nbs/images/autocomplete.png" width="400"
 alt="Autocomplete in Jupyter" />
 
 You can check if a table is in the database already:
@@ -110,7 +110,7 @@ ac, artist.columns
 
 Auto-complete works for columns too:
 
-<img src="images/columns_complete.png" width="300"
+<img src="/nbs/images/columns_complete.png" width="300"
 alt="Columns autocomplete in Jupyter" />
 
 The tables and views of a database got some interesting new attributes….
