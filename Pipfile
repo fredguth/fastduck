@@ -11,6 +11,7 @@ numpy = "*"
 pandas = "*"
 pathlib = "*"
 tabulate = "*"
+tqdm = "*"
 
 [dev-packages]
 setuptools = "*"

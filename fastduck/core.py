@@ -12,7 +12,9 @@ from dataclasses import field, make_dataclass
 from fastcore.xtras import hl_md, dataclass_src
 from functools import wraps, partial
 from pathlib import Path
-
+from IPython.display import display, update_display
+from tqdm import tqdm
+import time
 
 # %% auto 0
 __all__ = ['props', 'database', 'convertTypes', 'clean', 'custom_dir', 'create_patch_property', 'create_prop', 'noop', 'identity',
@@ -20,9 +22,24 @@ __all__ = ['props', 'database', 'convertTypes', 'clean', 'custom_dir', 'create_p
 
 # %% ../nbs/00_core.ipynb 13
 @wraps(duckdb.connect)
-def database(*args, **kwargs):
-    db = duckdb.connect(*args, **kwargs)
+def database(database: str = ':memory:', extensions:List[str]=[], *args, **kwargs):
+    db = duckdb.connect(database, *args, **kwargs)
+    with tqdm(total=len(extensions), desc="Installing and loading extensions") as pbar:
+        for extension in extensions:
+            start_time = time.time()
+            db.install_extension(extension)
+            db.load_extension(extension)
+            elapsed_time = time.time() - start_time
+            pbar.set_postfix_str(f"Loaded: {extension} ({elapsed_time:.2f}s)")
+            pbar.update(1)
+    
     return db
+    # for i, extension in enumerate(extensions):
+    #     display(f'Installing and loading: {extension}', display_id=f'ext_{i}')
+    #     db.install_extension(extension)
+    #     db.load_extension(extension)
+    #     update_display(f'Installed and loaded: {extension}', display_id=f'ext_{i}')
+    # return db
 
 # %% ../nbs/00_core.ipynb 16
 def _current(self: DuckDBPyConnection): return self.sql('select current_catalog, current_schema').fetchone()
