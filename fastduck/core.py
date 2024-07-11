@@ -345,7 +345,7 @@ def drop(self: DuckDBPyConnection, pattern: str):
     '''Drop a table or view'''
     schm, _, tbl = pattern.rpartition('.')
     schm = schm or self.schema
-    dropping = find_matches('.'.join([schm, tbl]), [rec['schema']+'.'+rec['name'] for rec in db.tables.filter(f"catalog = '{db.catalog}'").to_recs()])
+    dropping = find_matches('.'.join([schm, tbl]), [rec['schema']+'.'+rec['name'] for rec in self.tables.filter(f"catalog = '{self.catalog}'").to_recs()])
     for tbl in dropping: self.sql(f"DROP TABLE {tbl}")
 
 # %% ../nbs/00_core.ipynb 69
